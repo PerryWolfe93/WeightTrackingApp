@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Weight Loss Helper</string>
+    <string name="LoginButton">Log in</string>
+    <string name="LoginTitle">Weight Tracker</string>
+    <string name="LoginUsername">Username</string>
+    <string name="LoginPassword">Password</string>
+    <string name="ButtonForgotUsername">Forgot Username</string>
+    <string name="ButtonForgotPassword">Forgot Password</string>
+    <string name="ButtonNewUser">Create New User</string>
+</resources>

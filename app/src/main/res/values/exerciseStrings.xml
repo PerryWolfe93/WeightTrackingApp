@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tv_exercise_title">Exercise</string>
+    <string name="tv_exercise_date_title">Date</string>
+    <string name="tv_exercise_exercise_title">Exercise</string>
+    <string name="tv_exercise_time_title">Minutes Exercised</string>
+    <string name="tv_exercise_exercise_type">Exercise Type</string>
+    <string name="rb_exercise_cardio">Cardio</string>
+    <string name="rb_exercise_strength">Strength</string>
+    <string name="et_exercise_time">Minutes Exercised</string>
+    <string name="btn_exercise_back">Back</string>
+    <string name="btn_exercise_enter">Enter</string>
+</resources>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserProfileActivity">
+
+    <TextView
+        android:id="@+id/tv_userProfile_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/tv_userProfile_title"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_userProfile_enterGoalWeight"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/btn_userProfile_enterGoalWeight"
+        app:layout_constraintStart_toEndOf="@+id/et_userProfile_goalWeight"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_height" />
+
+    <Button
+        android:id="@+id/btn_userProfile_weight"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/btn_userProfile_weight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_userProfile_fitnessPlan" />
+
+    <Button
+        android:id="@+id/btn_userProfile_exercise"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/btn_userProfile_exercise"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_userProfile_weight" />
+
+    <Button
+        android:id="@+id/btn_userProfile_diet"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/btn_userProfile_diet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_userProfile_exercise" />
+
+    <EditText
+        android:id="@+id/et_userProfile_goalWeight"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="22dp"
+        android:autofillHints="@string/et_userProfile_goalWeight"
+        android:ems="10"
+        android:hint="@string/et_userProfile_goalWeight"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_height" />
+
+    <RadioGroup
+        android:id="@+id/rg_userProfile_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title">
+
+        <RadioButton
+            android:id="@+id/rb_userProfile_male"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_userProfile_male" />
+
+        <RadioButton
+            android:id="@+id/rb_userProfile_female"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_userProfile_female" />
+    </RadioGroup>
+
+    <SeekBar
+        android:id="@+id/sb_userProfile_age"
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        app:layout_constraintStart_toStartOf="@+id/sb_userProfile_height"
+        app:layout_constraintTop_toTopOf="@+id/tv_userProfile_age" />
+
+    <TextView
+        android:id="@+id/tv_userProfile_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/tv_userProfile_age"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_userProfile_gender" />
+
+    <TextView
+        android:id="@+id/tv_userProfile_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/tv_userProfile_height"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_age" />
+
+    <SeekBar
+        android:id="@+id/sb_userProfile_height"
+        android:layout_width="154dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="60dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_userProfile_height"
+        app:layout_constraintTop_toTopOf="@+id/tv_userProfile_height" />
+
+    <RadioGroup
+        android:id="@+id/rg_userProfile_fitnessPlan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_userProfile_goalWeight">
+
+        <RadioButton
+            android:id="@+id/rb_userProfile_loseWeight"
+            android:layout_width="133dp"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_userProfile_loseWeight" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="121dp"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_userProfile_gainMuscle" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_userProfile_maintain" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_userProfile_exerciseType"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/rg_userProfile_fitnessPlan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

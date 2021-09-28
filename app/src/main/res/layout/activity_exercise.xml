@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ExerciseActivity">
+
+    <TextView
+        android:id="@+id/tv_exercise_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/tv_exercise_title"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_exercise_list"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.416"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_exercise_time" />
+
+    <TextView
+        android:id="@+id/tv_exercise_exercise_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/tv_exercise_exercise_type"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_exercise_title" />
+
+    <EditText
+        android:id="@+id/et_exercise_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:autofillHints="@string/et_exercise_time"
+        android:ems="10"
+        android:hint="@string/et_exercise_time"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/btn_exercise_enter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner2" />
+
+    <Button
+        android:id="@+id/btn_exercise_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_exercise_enter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_exercise_time"
+        app:layout_constraintTop_toTopOf="@+id/et_exercise_time" />
+
+    <Button
+        android:id="@+id/btn_exercise_back"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/btn_exercise_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_exercise_date_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_exercise_date_title"
+        app:layout_constraintBottom_toTopOf="@+id/rv_exercise_list"
+        app:layout_constraintStart_toStartOf="@+id/rv_exercise_list" />
+
+    <TextView
+        android:id="@+id/tv_exercise_exercise_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/tv_exercise_exercise_title"
+        app:layout_constraintBottom_toTopOf="@+id/rv_exercise_list"
+        app:layout_constraintEnd_toStartOf="@+id/tv_exercise_time_title"
+        app:layout_constraintStart_toEndOf="@+id/tv_exercise_date_title" />
+
+    <TextView
+        android:id="@+id/tv_exercise_time_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_exercise_time_title"
+        app:layout_constraintBottom_toTopOf="@+id/rv_exercise_list"
+        app:layout_constraintEnd_toEndOf="@+id/rv_exercise_list" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_exercise_exercise_type" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

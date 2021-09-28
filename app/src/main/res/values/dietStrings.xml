@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tv_diet_title">Diet</string>
+    <string name="et_diet_calories">Calories</string>
+    <string name="btn_diet_add">Add</string>
+    <string name="btn_diet_subtract">Subtract</string>
+    <string name="btn_diet_back">Back</string>
+    <string name="tv_diet_date_title">Date</string>
+    <string name="tv_diet_calories_title">Calories</string>
+</resources>

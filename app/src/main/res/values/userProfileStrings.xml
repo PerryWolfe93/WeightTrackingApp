@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tv_userProfile_title">User Name</string>
+    <string name="et_userProfile_goalWeight">Goal Weight</string>
+    <string name="et_userProfile_currentWeight">Current Weight</string>
+    <string name="btn_userProfile_enterCurrentWeight">Enter Weight</string>
+    <string name="btn_userProfile_enterGoalWeight">Enter Weight</string>
+    <string name="btn_userProfile_weight">Weight</string>
+    <string name="btn_userProfile_exercise">Exercise</string>
+    <string name="btn_userProfile_diet">Diet</string>
+    <string name="rb_userProfile_male">Male</string>
+    <string name="rb_userProfile_female">Female</string>
+    <string name="tv_userProfile_age">Age: </string>
+    <string name="tv_userProfile_height">Height: </string>
+    <string name="rb_userProfile_gainMuscle">Gain Muscle</string>
+    <string name="rb_userProfile_loseWeight">Lose Weight</string>
+    <string name="rb_userProfile_maintain">Maintain</string>
+    <string name="tv_userProfile_exerciseType">Choose a fitness plan:</string>
+</resources>
