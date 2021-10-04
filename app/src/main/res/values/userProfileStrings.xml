@@ -16,4 +16,11 @@
     <string name="rb_userProfile_loseWeight">Lose Weight</string>
     <string name="rb_userProfile_maintain">Maintain</string>
     <string name="tv_userProfile_exerciseType">Choose a fitness plan:</string>
+    <string name="btn_userProfile_edit">Edit</string>
+    <string name="tv_userProfile_genderData">"Gender: "</string>
+    <string name="tv_userProfile_ageData">"Age: "</string>
+    <string name="tv_userProfile_heightData">"Height: "</string>
+    <string name="tv_userProfile_goalWeightData">"Goal Weight: "</string>
+    <string name="tv_userProfile_fitnessPlanData">"Fitness Plan: "</string>
+    <string name="tv_userProfile_gender">Gender: </string>
 </resources>

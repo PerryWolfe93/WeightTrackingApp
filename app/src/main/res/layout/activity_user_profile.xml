@@ -7,166 +7,279 @@
     tools:context=".UserProfileActivity">
 
     <TextView
-        android:id="@+id/tv_userProfile_title"
+        android:id="@+id/tv_userProfile_genderData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/tv_userProfile_title"
-        android:textSize="24sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/tv_userProfile_genderData"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_userProfile_enterGoalWeight"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="18dp"
-        android:text="@string/btn_userProfile_enterGoalWeight"
-        app:layout_constraintStart_toEndOf="@+id/et_userProfile_goalWeight"
-        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_height" />
-
-    <Button
-        android:id="@+id/btn_userProfile_weight"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/btn_userProfile_weight"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_userProfile_fitnessPlan" />
-
-    <Button
-        android:id="@+id/btn_userProfile_exercise"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/btn_userProfile_exercise"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_userProfile_weight" />
-
-    <Button
-        android:id="@+id/btn_userProfile_diet"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/btn_userProfile_diet"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_userProfile_exercise" />
-
-    <EditText
-        android:id="@+id/et_userProfile_goalWeight"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="22dp"
-        android:autofillHints="@string/et_userProfile_goalWeight"
-        android:ems="10"
-        android:hint="@string/et_userProfile_goalWeight"
-        android:inputType="numberDecimal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_height" />
-
-    <RadioGroup
-        android:id="@+id/rg_userProfile_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title">
-
-        <RadioButton
-            android:id="@+id/rb_userProfile_male"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/rb_userProfile_male" />
-
-        <RadioButton
-            android:id="@+id/rb_userProfile_female"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/rb_userProfile_female" />
-    </RadioGroup>
-
-    <SeekBar
-        android:id="@+id/sb_userProfile_age"
-        android:layout_width="150dp"
-        android:layout_height="25dp"
-        app:layout_constraintStart_toStartOf="@+id/sb_userProfile_height"
-        app:layout_constraintTop_toTopOf="@+id/tv_userProfile_age" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title" />
 
     <TextView
-        android:id="@+id/tv_userProfile_age"
+        android:id="@+id/tv_userProfile_ageData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/tv_userProfile_age"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_userProfile_gender" />
-
-    <TextView
-        android:id="@+id/tv_userProfile_height"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/tv_userProfile_height"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_age" />
-
-    <SeekBar
-        android:id="@+id/sb_userProfile_height"
-        android:layout_width="154dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="60dp"
-        app:layout_constraintStart_toEndOf="@+id/tv_userProfile_height"
-        app:layout_constraintTop_toTopOf="@+id/tv_userProfile_height" />
-
-    <RadioGroup
-        android:id="@+id/rg_userProfile_fitnessPlan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/tv_userProfile_ageData"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_userProfile_goalWeight">
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title" />
 
-        <RadioButton
-            android:id="@+id/rb_userProfile_loseWeight"
-            android:layout_width="133dp"
-            android:layout_height="wrap_content"
-            android:text="@string/rb_userProfile_loseWeight" />
+    <TextView
+        android:id="@+id/tv_userProfile_heightData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/tv_userProfile_heightData"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title" />
 
-        <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="121dp"
-            android:layout_height="wrap_content"
-            android:text="@string/rb_userProfile_gainMuscle" />
+    <TextView
+        android:id="@+id/tv_userProfile_goalWeightData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/tv_userProfile_goalWeightData"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title" />
 
-        <RadioButton
-            android:id="@+id/radioButton3"
+    <TextView
+        android:id="@+id/tv_userProfile_fitnessPlanData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="290dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/tv_userProfile_fitnessPlanData"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_userProfile_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_userProfile_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/rb_userProfile_maintain" />
-    </RadioGroup>
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/tv_userProfile_title"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_userProfile_exerciseType"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/rg_userProfile_fitnessPlan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_userProfile_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:text="@string/tv_userProfile_gender" />
+
+            <RadioGroup
+                android:id="@+id/rg_userProfile_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_userProfile_male"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rb_userProfile_male" />
+
+                <RadioButton
+                    android:id="@+id/rb_userProfile_female"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rb_userProfile_female" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_userProfile_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tv_userProfile_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_userProfile_age"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="@+id/sb_userProfile_age" />
+
+            <SeekBar
+                android:id="@+id/sb_userProfile_age"
+                android:layout_width="150dp"
+                android:layout_height="25dp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_userProfile_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_userProfile_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_userProfile_height"
+                android:textSize="20sp" />
+
+            <SeekBar
+                android:id="@+id/sb_userProfile_height"
+                android:layout_width="150dp"
+                android:layout_height="25dp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/tv_userProfile_exerciseType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/tv_userProfile_exerciseType"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_userProfile_fitnessPlan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_userProfile_loseWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_userProfile_loseWeight" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_userProfile_gainMuscle" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_userProfile_maintain" />
+        </RadioGroup>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_userProfile_goalWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/et_userProfile_goalWeight"
+                android:hint="@string/et_userProfile_goalWeight"
+                android:inputType="numberDecimal" />
+
+            <Button
+                android:id="@+id/btn_userProfile_enterGoalWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_userProfile_enterGoalWeight" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/btn_userProfile_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/btn_userProfile_edit" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <Button
+            android:id="@+id/btn_userProfile_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/btn_userProfile_weight" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/btn_userProfile_exercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/btn_userProfile_exercise" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/btn_userProfile_diet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/btn_userProfile_diet" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

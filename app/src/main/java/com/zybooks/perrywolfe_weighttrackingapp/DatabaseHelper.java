@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_AGE = "AGE";
     public static final String COLUMN_HEIGHT = "HEIGHT";
     public static final String COLUMN_GOAL_WEIGHT = "GOAL_WEIGHT";
+    public static final String COLUMN_FITNESS_PLAN = "FITNESS_PLAN";
 
     // Weight Data Table Constants
     public static final String WEIGHT_DATA_TABLE = "WEIGHT_DATA_TABLE";
@@ -66,7 +67,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_GENDER + " TEXT, " +
                 COLUMN_AGE + " INTEGER, " +
                 COLUMN_HEIGHT + " DOUBLE, " +
-                COLUMN_GOAL_WEIGHT + " DOUBLE)";
+                COLUMN_GOAL_WEIGHT + " DOUBLE, " +
+                COLUMN_FITNESS_PLAN + " TEXT)";
         weightTrackerDB.execSQL(userDataTable);
 
         String weightDataTable = "CREATE TABLE " + WEIGHT_DATA_TABLE + " (" +
@@ -93,6 +95,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    //TODO Check all database methods to ensure they are necessary
+
+    // Database method for checking if a field is null
+    public boolean checkForData(String column, String table) {
+        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        boolean result = cursor.getCount()>0;
+        cursor.close();
+        return result;
+    }
+    // Database method for getting a single data entry
+    public String getStringData(String column, String table) {
+        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        cursor.moveToFirst();
+        String data = cursor.getString(0);
+        cursor.close();
+        return data;
+    }
+    public int getIntData(String column, String table) {
+        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        cursor.moveToFirst();
+        int data = cursor.getInt(0);
+        cursor.close();
+        return data;
+    }
+    public double getDoubleData(String column, String table) {
+        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        cursor.moveToFirst();
+        double data = cursor.getDouble(0);
+        cursor.close();
+        return data;
     }
 
     // Database methods for new users/login
@@ -153,6 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_GENDER, userInfo.getGender());
         cv.put(COLUMN_HEIGHT, userInfo.getHeight());
         cv.put(COLUMN_GOAL_WEIGHT, userInfo.getGoalWeight());
+        cv.put(COLUMN_FITNESS_PLAN, userInfo.getFitnessPlan());
 
 
         long insert = weightTrackerDB.insert(USER_DATA_TABLE, null, cv);
@@ -168,6 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_GENDER, userInfo.getGender());
         cv.put(COLUMN_HEIGHT, userInfo.getHeight());
         cv.put(COLUMN_GOAL_WEIGHT, userInfo.getGoalWeight());
+        cv.put(COLUMN_FITNESS_PLAN, userInfo.getFitnessPlan());
 
         long update = weightTrackerDB.update(USER_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser), null);
         return update != -1;

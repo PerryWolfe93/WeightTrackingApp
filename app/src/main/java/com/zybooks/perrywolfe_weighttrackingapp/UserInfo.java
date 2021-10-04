@@ -9,11 +9,11 @@ public class UserInfo {
     private String fitnessPlan;
 
     public UserInfo() {
-        this.gender = "NULL";
+        this.gender = null;
         this.age = 0;
         this.height = 0;
         this.goalWeight = 0;
-        this.fitnessPlan = "NULL";
+        this.fitnessPlan = null;
     }
 
     // Getters

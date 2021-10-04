@@ -36,7 +36,9 @@ public class ExerciseActivity extends AppCompatActivity {
 
         // Assign values to widget variables
         recyclerView = findViewById(R.id.rv_exercise_list);
-        exerciseSelect = findViewById(R.id.rg_exercise_exercise_type);
+        //TODO Add exercise selection radio group
+
+        // exerciseSelect = findViewById(R.id.rg_exercise_exercise_type);
         exerciseTime = findViewById(R.id.et_exercise_time);
         enter = findViewById(R.id.btn_exercise_enter);
         back = findViewById(R.id.btn_exercise_back);

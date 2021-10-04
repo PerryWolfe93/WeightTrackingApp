@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -14,9 +15,9 @@ import android.widget.TextView;
 public class UserProfileActivity extends AppCompatActivity {
 
     // Variable declarations
-    private TextView age, height, username;
+    private TextView age, height, username, genderData, ageData, heightData, goalWeightData, fitnessPlanData;
     private EditText goalWeight;
-    private Button enterGoalWeight, weight, exercise, diet;
+    private Button enterGoalWeight, weight, exercise, diet, edit;
     private SeekBar ageBar, heightBar;
     private RadioGroup genderSelect, fitnessPlanSelect;
     private RadioButton gender, fitnessPlan;
@@ -44,6 +45,12 @@ public class UserProfileActivity extends AppCompatActivity {
         fitnessPlanSelect = findViewById(R.id.rg_userProfile_fitnessPlan);
         ageBar = findViewById(R.id.sb_userProfile_age);
         heightBar = findViewById(R.id.sb_userProfile_height);
+        edit = findViewById(R.id.btn_userProfile_edit);
+        genderData = findViewById(R.id.tv_userProfile_gender);
+        ageData = findViewById(R.id.tv_userProfile_ageData);
+        heightData = findViewById(R.id.tv_userProfile_heightData);
+        goalWeightData = findViewById(R.id.tv_userProfile_goalWeightData);
+        fitnessPlanData = findViewById(R.id.tv_userProfile_fitnessPlanData);
 
         // Set page title
         username.setText(User.currentUser);
@@ -53,10 +60,45 @@ public class UserProfileActivity extends AppCompatActivity {
             weightTrackerDB.addUserInfo(userInfo);
         }
 
+        //TODO Check for data and set visibility to GONE for widgets and to VISIBLE for text views
+        if(weightTrackerDB.getStringData("GENDER", "USER_DATA_TABLE") != null) {
+            genderSelect.setVisibility(View.GONE);
+            genderData.setVisibility(View.VISIBLE);
+            genderData.setText("Gender: " + weightTrackerDB.getStringData("GENDER", "USER_DATA_TABLE"));
+        }
+        if(weightTrackerDB.getIntData("AGE", "USER_DATA_TABLE") != 0) {
+            ageBar.setVisibility(View.GONE);
+            ageData.setVisibility(View.VISIBLE);
+            ageData.setText("Gender: " + weightTrackerDB.getIntData("AGE", "USER_DATA_TABLE"));
+        }
+        if(weightTrackerDB.getDoubleData("HEIGHT", "USER_DATA_TABLE") != 0.0) {
+            heightBar.setVisibility(View.GONE);
+            heightData.setVisibility(View.VISIBLE);
+            heightData.setText("Gender: " + weightTrackerDB.getDoubleData("HEIGHT", "USER_DATA_TABLE"));
+        }
+        if(weightTrackerDB.getDoubleData("GOAL_WEIGHT", "USER_DATA_TABLE") != 0.0) {
+            enterGoalWeight.setVisibility(View.GONE);
+            goalWeightData.setVisibility(View.VISIBLE);
+            goalWeightData.setText("Gender: " + weightTrackerDB.getDoubleData("GOAL_WEIGHT", "USER_DATA_TABLE"));
+        }
+        if(weightTrackerDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE") != null) {
+            fitnessPlanSelect.setVisibility(View.GONE);
+            fitnessPlanData.setVisibility(View.VISIBLE);
+            fitnessPlanData.setText("Gender: " + weightTrackerDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
+        }
+
         // Set click listeners for buttons
         enterGoalWeight.setOnClickListener(v -> {
+
             userInfo.setGoalWeight(Float.valueOf(goalWeight.getText().toString()));
             weightTrackerDB.updateUserInfo(userInfo);
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
         });
 
         genderSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -64,6 +106,15 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 gender = findViewById(checkedId);
                 userInfo.setGender(gender.getText().toString());
+                weightTrackerDB.updateUserInfo(userInfo);
+            }
+        });
+
+        fitnessPlanSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                fitnessPlan = findViewById(checkedId);
+                userInfo.setFitnessPlan(fitnessPlan.getText().toString());
                 weightTrackerDB.updateUserInfo(userInfo);
             }
         });
