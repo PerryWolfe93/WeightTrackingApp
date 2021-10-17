@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-
 import androidx.annotation.Nullable;
 
-
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+
+    // Database Constants
 
     // Login Table Constants
     public static final String LOGIN_TABLE = "LOGIN_TABLE";
@@ -37,6 +37,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Diet Data Table Constants
     public static final String DIET_DATA_TABLE = "DIET_DATA_TABLE";
     public static final String COLUMN_CALORIES = "CALORIES";
+    public static final String COLUMN_PROTEIN = "PROTEIN";
+    public static final String COLUMN_CARB = "CARB";
+    public static final String COLUMN_FAT = "FAT";
 
     // Exercise Data Table Constants
     public static final String EXERCISE_DATA_TABLE = "EXERCISE_DATA_TABLE";
@@ -46,11 +49,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // The Date Is Shared Between Three Tables
     public static final String COLUMN_DATE = "DATE";
 
+    // Default constructor for database helper
     public DatabaseHelper(@Nullable Context context) {
         super(context, "Weight Tracker Database", null, 1);
     }
 
-    // Called the first time the database is accessed
+    // Called the first time the database is accessed. Generates all database tables
     @Override
     public void onCreate(SQLiteDatabase weightTrackerDB) {
 
@@ -80,7 +84,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String dietDataTable = "CREATE TABLE " + DIET_DATA_TABLE + " (" +
                 USER_ID + " INTEGER, " +
                 COLUMN_CALORIES + " INTEGER, " +
-                COLUMN_DATE + " TEXT)";
+                COLUMN_DATE + " TEXT, " +
+                COLUMN_PROTEIN + " INTEGER, " +
+                COLUMN_CARB + " INTEGER, " +
+                COLUMN_FAT + " INTEGER)";
         weightTrackerDB.execSQL(dietDataTable);
 
         String exerciseDataTable = "CREATE TABLE " + EXERCISE_DATA_TABLE + " (" +
@@ -97,17 +104,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    //TODO Check all database methods to ensure they are necessary
+
+    // Database methods
 
     // Database method for checking if a field is null
     public boolean checkForData(String column, String table) {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
         Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        cursor.moveToFirst();
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
-    // Database method for getting a single data entry
+    // Database methods for getting a single data entry
     public String getStringData(String column, String table) {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
         Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
@@ -124,7 +133,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return data;
     }
-    public double getDoubleData(String column, String table) {
+    public double getFloatData(String column, String table) {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
         Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
         cursor.moveToFirst();
@@ -181,6 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return result;
     }
+    // Inserts user info into the database
     public boolean addUserInfo(UserInfo userInfo) {
 
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
@@ -196,6 +206,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long insert = weightTrackerDB.insert(USER_DATA_TABLE, null, cv);
         return insert != -1;
+    }
+    // Creates Diet object with current date's data
+    public UserInfo getCurrentUserInfo() {
+        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_AGE + ", " + COLUMN_GENDER + ", " + COLUMN_HEIGHT + ", " + COLUMN_GOAL_WEIGHT + ", " + COLUMN_FITNESS_PLAN + " from " + USER_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        cursor.moveToFirst();
+        return new UserInfo(cursor.getString(1), 0, 2, cursor.getFloat(3), cursor.getString(4));
     }
     public boolean updateUserInfo(UserInfo userInfo) {
 
@@ -213,14 +230,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return update != -1;
     }
 
+
     // Database methods for weight data
-    public boolean checkForWeight() {
+
+    // Checks database for weight table data from the current day
+    public boolean checkForWeightData() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + WEIGHT_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + WEIGHT_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
+    // Inserts a weight into the database
     public boolean addOneWeight(Weight weight) {
 
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
@@ -233,6 +254,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long insert = weightTrackerDB.insert(WEIGHT_DATA_TABLE, null, cv);
         return insert != -1;
     }
+    // Updates the current date's data
     public boolean updateWeight(Weight weight) {
 
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
@@ -242,9 +264,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_WEIGHT, weight.getWeight());
         cv.put(COLUMN_DATE, weight.getDate());
 
-        long update = weightTrackerDB.update(WEIGHT_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        long update = weightTrackerDB.update(WEIGHT_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         return update != -1;
     }
+    // Generates a list of weight data to use in the weight recyclerview
     public ArrayList<Weight> getWeightList() {
 
         ArrayList<Weight> weightList = new ArrayList<>();
@@ -269,20 +292,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return weightList;
     }
 
+
     // Database methods for diet data
-    public boolean checkForCalories() {
+
+    // Checks database for diet table data from the current day
+    public boolean checkForCalorieData() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
+    // Creates Diet object with current date's data
     public Diet getCurrentDiet() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
-        Diet diet = new Diet(cursor.getString(0), cursor.getInt(1));
-        return diet;
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+        cursor.moveToFirst();
+        return new Diet(cursor.getString(0), 0, 0, 0, 0);
     }
+    // Inserts a diet into the database
     public boolean addOneDiet(Diet diet) {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -290,10 +318,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_CALORIES, diet.getCalories());
         cv.put(COLUMN_DATE, diet.getDate());
+        cv.put(COLUMN_PROTEIN, diet.getProtein());
+        cv.put(COLUMN_CARB, diet.getCarb());
+        cv.put(COLUMN_FAT, diet.getFat());
         
         long insert = weightTrackerDB.insert(DIET_DATA_TABLE, null, cv);
         return insert != -1;
     }
+    // Updates the current date's data
     public boolean updateDiet(Diet diet) {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -301,22 +333,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_CALORIES, diet.getCalories());
         cv.put(COLUMN_DATE, diet.getDate());
+        cv.put(COLUMN_PROTEIN, diet.getProtein());
+        cv.put(COLUMN_CARB, diet.getCarb());
+        cv.put(COLUMN_FAT, diet.getFat());
         
-        long update = weightTrackerDB.update(DIET_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        long update = weightTrackerDB.update(DIET_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         return update != -1;
     }
+    // Generates a list of diet data to use in the diet recyclerview
     public ArrayList<Diet> getDietList() {
         ArrayList<Diet> dietList = new ArrayList<>();
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
         
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
         
         if(cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(0);
                 int calories = cursor.getInt(1);
+                int protein = cursor.getInt(2);
+                int carb = cursor.getInt(3);
+                int fat = cursor.getInt(4);
 
-                Diet dietObj = new Diet(date, calories);
+                Diet dietObj = new Diet(date, calories, protein, carb, fat);
                 dietList.add(dietObj);
 
             } while(cursor.moveToNext());
@@ -326,15 +365,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return dietList;
     }
-    
+
+
     // Database methods for exercise data
-    public boolean checkForExercise() {
+
+    // Checks database for exercise table data from the current day
+    public boolean checkForExerciseData() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + EXERCISE_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + EXERCISE_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
+    // Inserts an exercise into the database
     public boolean addOneExercise(Exercise exercise) {
 
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
@@ -348,6 +391,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long insert = weightTrackerDB.insert(EXERCISE_DATA_TABLE, null, cv);
         return insert != -1;
     }
+    // Updates the current date's data
     public boolean updateExercise(Exercise exercise) {
 
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
@@ -361,6 +405,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long update = weightTrackerDB.update(EXERCISE_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
         return update != -1;
     }
+    // Generates a list of exercise data to use in the exercise recyclerview
     public ArrayList<Exercise> getExerciseList() {
 
         ArrayList<Exercise> exerciseList = new ArrayList<>();
@@ -385,6 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return exerciseList;
     }
+
 
     // Database methods for administration
     public boolean deleteUser(User user) {

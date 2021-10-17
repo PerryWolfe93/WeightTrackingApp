@@ -42,12 +42,14 @@ public class WeightActivity extends AppCompatActivity {
 
             if(currentWeight.equals("")) {
                 Toast.makeText(WeightActivity.this, "Please Enter Your Weight", Toast.LENGTH_SHORT).show();
-            } else if(weightTrackerDB.checkForWeight()) {
+            } else if(weightTrackerDB.checkForWeightData()) {
                 Weight weightEntry = new Weight(weight, date);
                 weightTrackerDB.updateWeight(weightEntry);
+                setAdapter();
             } else {
                 Weight weightEntry = new Weight(weight, date);
                 weightTrackerDB.addOneWeight(weightEntry);
+                setAdapter();
             }
         });
 

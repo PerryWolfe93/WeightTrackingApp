@@ -15,13 +15,14 @@ import android.widget.TextView;
 public class UserProfileActivity extends AppCompatActivity {
 
     // Variable declarations
-    private TextView age, height, username, genderData, ageData, heightData, goalWeightData, fitnessPlanData;
+    private TextView age, height, username, genderData, ageData, heightData, goalWeightData, fitnessPlanData, fitnessPlanPrompt;
     private EditText goalWeight;
     private Button enterGoalWeight, weight, exercise, diet, edit;
     private SeekBar ageBar, heightBar;
     private RadioGroup genderSelect, fitnessPlanSelect;
     private RadioButton gender, fitnessPlan;
     DatabaseHelper weightTrackerDB;
+    private UserInfo userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,6 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         // Initialize instances of User Info and DatabaseHelper
-        UserInfo userInfo = new UserInfo();
         weightTrackerDB = new DatabaseHelper(UserProfileActivity.this);
 
         // Assign values to widget variables
@@ -51,40 +51,37 @@ public class UserProfileActivity extends AppCompatActivity {
         heightData = findViewById(R.id.tv_userProfile_heightData);
         goalWeightData = findViewById(R.id.tv_userProfile_goalWeightData);
         fitnessPlanData = findViewById(R.id.tv_userProfile_fitnessPlanData);
+        fitnessPlanPrompt = findViewById(R.id.tv_userProfile_exerciseType);
+
 
         // Set page title
         username.setText(User.currentUser);
 
-        // Check for database data
+
+        // If user info is not in database, add to database
         if(!weightTrackerDB.checkUserInfo(weightTrackerDB.getUserID(User.currentUser))) {
+            userInfo = new UserInfo(null, 0, 0, 0.0f, null);
             weightTrackerDB.addUserInfo(userInfo);
+        } else {
+            userInfo = weightTrackerDB.getCurrentUserInfo();
         }
 
-        //TODO Check for data and set visibility to GONE for widgets and to VISIBLE for text views
+
+        // If data exists, display on screen instead of data entry widgets
         if(weightTrackerDB.getStringData("GENDER", "USER_DATA_TABLE") != null) {
-            genderSelect.setVisibility(View.GONE);
-            genderData.setVisibility(View.VISIBLE);
-            genderData.setText("Gender: " + weightTrackerDB.getStringData("GENDER", "USER_DATA_TABLE"));
+            swapGenderWidgets();
         }
         if(weightTrackerDB.getIntData("AGE", "USER_DATA_TABLE") != 0) {
-            ageBar.setVisibility(View.GONE);
-            ageData.setVisibility(View.VISIBLE);
-            ageData.setText("Gender: " + weightTrackerDB.getIntData("AGE", "USER_DATA_TABLE"));
+            swapAgeWidgets();
         }
-        if(weightTrackerDB.getDoubleData("HEIGHT", "USER_DATA_TABLE") != 0.0) {
-            heightBar.setVisibility(View.GONE);
-            heightData.setVisibility(View.VISIBLE);
-            heightData.setText("Gender: " + weightTrackerDB.getDoubleData("HEIGHT", "USER_DATA_TABLE"));
+        if(weightTrackerDB.getIntData("HEIGHT", "USER_DATA_TABLE") != 0) {
+            swapHeightWidgets();
         }
-        if(weightTrackerDB.getDoubleData("GOAL_WEIGHT", "USER_DATA_TABLE") != 0.0) {
-            enterGoalWeight.setVisibility(View.GONE);
-            goalWeightData.setVisibility(View.VISIBLE);
-            goalWeightData.setText("Gender: " + weightTrackerDB.getDoubleData("GOAL_WEIGHT", "USER_DATA_TABLE"));
+        if(weightTrackerDB.getFloatData("GOAL_WEIGHT", "USER_DATA_TABLE") != 0.0f) {
+            swapGoalWeightWidgets();
         }
         if(weightTrackerDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE") != null) {
-            fitnessPlanSelect.setVisibility(View.GONE);
-            fitnessPlanData.setVisibility(View.VISIBLE);
-            fitnessPlanData.setText("Gender: " + weightTrackerDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
+            swapFitnessPlanWidgets();
         }
 
         // Set click listeners for buttons
@@ -92,37 +89,34 @@ public class UserProfileActivity extends AppCompatActivity {
 
             userInfo.setGoalWeight(Float.valueOf(goalWeight.getText().toString()));
             weightTrackerDB.updateUserInfo(userInfo);
+            swapGoalWeightWidgets();
         });
 
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        edit.setOnClickListener(v -> {
+            swapAllWidgets();
         });
-
-        genderSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+        // Gender radio group click listener that changes widgets when button selected
+        genderSelect.setOnCheckedChangeListener((group, checkedId) -> {
+            if(checkedId > -1) {
                 gender = findViewById(checkedId);
                 userInfo.setGender(gender.getText().toString());
                 weightTrackerDB.updateUserInfo(userInfo);
+                swapGenderWidgets();
             }
         });
-
-        fitnessPlanSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+        // Fitness plan radio group click listener that changes widgets when button selected
+        fitnessPlanSelect.setOnCheckedChangeListener((group, checkedId) -> {
+            if(checkedId > -1) {
                 fitnessPlan = findViewById(checkedId);
                 userInfo.setFitnessPlan(fitnessPlan.getText().toString());
                 weightTrackerDB.updateUserInfo(userInfo);
+                swapFitnessPlanWidgets();
             }
         });
 
         ageBar.setMax(87);
         ageBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             final int min = 12;
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int value = min + progress;
@@ -130,60 +124,122 @@ public class UserProfileActivity extends AppCompatActivity {
                 userInfo.setAge(value);
                 weightTrackerDB.updateUserInfo(userInfo);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                swapAgeWidgets();
             }
         });
 
         heightBar.setMax(36);
         heightBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             final int min = 48;
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int value = min + progress;
                 int ft = value / 12;
                 int in = value % 12;
-                height.setText(ft + " ft " + in + " in.");
+                height.setText("Height: " + ft + " ft " + in + " in.");
                 userInfo.setHeight(value);
                 weightTrackerDB.updateUserInfo(userInfo);
-            }
 
+            }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                swapHeightWidgets();
             }
         });
 
         // Buttons to change activities
         weight.setOnClickListener(v -> openWeightActivity());
-
         exercise.setOnClickListener(v -> openExerciseActivity());
-
         diet.setOnClickListener(v -> openDietActivity());
     }
 
+
+    // Change current activity layout methods
+
+    // Swap gender widgets
+    public void swapGenderWidgets() {
+        genderSelect.setVisibility(View.GONE);
+        genderData.setVisibility(View.VISIBLE);
+        genderData.setText("Gender: " + weightTrackerDB.getStringData("GENDER", "USER_DATA_TABLE"));
+    }
+    // Swap age widgets
+    public void swapAgeWidgets() {
+        ageBar.setVisibility(View.GONE);
+        age.setVisibility(View.GONE);
+        ageData.setVisibility(View.VISIBLE);
+        ageData.setText("Age: " + weightTrackerDB.getIntData("AGE", "USER_DATA_TABLE"));
+    }
+    // Swap height widgets
+    public void swapHeightWidgets() {
+        heightBar.setVisibility(View.GONE);
+        height.setVisibility(View.GONE);
+        heightData.setVisibility(View.VISIBLE);
+        int dbHeight = weightTrackerDB.getIntData("HEIGHT", "USER_DATA_TABLE");
+        int ft = dbHeight / 12;
+        int in = dbHeight % 12;
+        heightData.setText("Height: " + ft + " ft " + in + " in.");
+    }
+    // Swap goal weight widgets
+    public void swapGoalWeightWidgets() {
+        enterGoalWeight.setVisibility(View.GONE);
+        goalWeight.setVisibility(View.GONE);
+        goalWeightData.setVisibility(View.VISIBLE);
+        goalWeightData.setText("Goal Weight: " + weightTrackerDB.getFloatData("GOAL_WEIGHT", "USER_DATA_TABLE"));
+    }
+    // Swap fitness plan widgets
+    public void swapFitnessPlanWidgets() {
+        fitnessPlanSelect.setVisibility(View.GONE);
+        fitnessPlanPrompt.setVisibility(View.GONE);
+        fitnessPlanData.setVisibility(View.VISIBLE);
+        fitnessPlanData.setText("Fitness Plan: " + weightTrackerDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
+    }
+    // Swaps all widgets when edit button clicked
+    public void swapAllWidgets() {
+        genderSelect.clearCheck();
+        fitnessPlanSelect.clearCheck();
+        genderData.setVisibility(View.GONE);
+        genderSelect.setVisibility(View.VISIBLE);
+        ageBar.setVisibility(View.VISIBLE);
+        age.setVisibility(View.VISIBLE);
+        ageData.setVisibility(View.GONE);
+        heightBar.setVisibility(View.VISIBLE);
+        heightData.setVisibility(View.GONE);
+        height.setVisibility(View.VISIBLE);
+        enterGoalWeight.setVisibility(View.VISIBLE);
+        goalWeight.setVisibility(View.VISIBLE);
+        goalWeightData.setVisibility(View.GONE);
+        fitnessPlanSelect.setVisibility(View.VISIBLE);
+        fitnessPlanPrompt.setVisibility(View.VISIBLE);
+        fitnessPlanData.setVisibility(View.GONE);
+        goalWeight.setText("");
+        heightBar.setProgress(0);
+        height.setText("Height: ");
+        ageBar.setProgress(0);
+        age.setText("Age: ");
+    }
+
+
     // Activity change methods
+
+    // Navigate to weight page
     public void openWeightActivity() {
         Intent intent = new Intent(this, WeightActivity.class);
         startActivity(intent);
     }
+    // Navigate to exercise page
     public void openExerciseActivity() {
         Intent intent = new Intent(this, ExerciseActivity.class);
         startActivity(intent);
     }
+    // Navigate to diet page
     public void openDietActivity() {
         Intent intent = new Intent(this, DietActivity.class);
         startActivity(intent);

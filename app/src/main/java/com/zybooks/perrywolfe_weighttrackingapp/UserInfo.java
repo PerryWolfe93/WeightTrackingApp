@@ -8,12 +8,12 @@ public class UserInfo {
     private float goalWeight;
     private String fitnessPlan;
 
-    public UserInfo() {
-        this.gender = null;
-        this.age = 0;
-        this.height = 0;
-        this.goalWeight = 0;
-        this.fitnessPlan = null;
+    public UserInfo(String gender, int age, int height, float goalWeight, String fitnessPlan) {
+        this.gender = gender;
+        this.age = age;
+        this.height = height;
+        this.goalWeight = goalWeight;
+        this.fitnessPlan = fitnessPlan;
     }
 
     // Getters

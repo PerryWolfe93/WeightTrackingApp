@@ -7,4 +7,10 @@
     <string name="btn_diet_back">Back</string>
     <string name="tv_diet_date_title">Date</string>
     <string name="tv_diet_calories_title">Calories</string>
+    <string name="et_diet_protein">Protein</string>
+    <string name="tv_diet_proteinColumn">Protein</string>
+    <string name="tv_diet_carbColumn">Carb</string>
+    <string name="tv_diet_fatColumn">Fat</string>
+    <string name="et_diet_carb">Carb</string>
+    <string name="et_diet_fat">Fat</string>
 </resources>

@@ -6,34 +6,154 @@
     android:layout_height="match_parent"
     tools:context=".DietActivity">
 
-    <TextView
-        android:id="@+id/tv_diet_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/tv_diet_title"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_diet_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/tv_diet_title"
+            android:textSize="34sp" />
+
+        <EditText
+            android:id="@+id/et_diet_calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:autofillHints="@string/et_diet_calories"
+            android:ems="10"
+            android:hint="@string/et_diet_calories"
+            android:inputType="textPersonName" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <EditText
+                android:id="@+id/et_diet_protein"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:hint="@string/et_diet_protein"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/et_diet_carb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:hint="@string/et_diet_carb"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/et_diet_fat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:hint="@string/et_diet_fat"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_diet_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_diet_add" />
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_diet_subtract"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_diet_subtract" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_diet_date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tv_diet_date_title" />
+
+            <TextView
+                android:id="@+id/tv_diet_calories_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tv_diet_calories_title" />
+
+            <TextView
+                android:id="@+id/tv_diet_proteinColumn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tv_diet_proteinColumn" />
+
+            <TextView
+                android:id="@+id/tv_diet_carbColumn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tv_diet_carbColumn" />
+
+            <TextView
+                android:id="@+id/tv_diet_fatColumn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tv_diet_fatColumn" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_diet_list"
-        android:layout_width="250dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_diet_add" />
-
-    <Button
-        android:id="@+id/btn_diet_add"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/btn_diet_add"
-        app:layout_constraintStart_toStartOf="@+id/et_diet_calories"
-        app:layout_constraintTop_toBottomOf="@+id/et_diet_calories" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <Button
         android:id="@+id/btn_diet_back"
@@ -45,43 +165,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/et_diet_calories"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:autofillHints="@string/et_diet_calories"
-        android:ems="10"
-        android:hint="@string/et_diet_calories"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_diet_title" />
-
-    <Button
-        android:id="@+id/btn_diet_subtract"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/btn_diet_subtract"
-        app:layout_constraintEnd_toEndOf="@+id/et_diet_calories"
-        app:layout_constraintStart_toEndOf="@+id/btn_diet_add"
-        app:layout_constraintTop_toBottomOf="@+id/et_diet_calories" />
-
-    <TextView
-        android:id="@+id/tv_diet_date_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_diet_date_title"
-        app:layout_constraintBottom_toTopOf="@+id/rv_diet_list"
-        app:layout_constraintStart_toStartOf="@+id/rv_diet_list" />
-
-    <TextView
-        android:id="@+id/tv_diet_calories_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_diet_calories_title"
-        app:layout_constraintBottom_toTopOf="@+id/rv_diet_list"
-        app:layout_constraintEnd_toEndOf="@+id/rv_diet_list"
-        app:layout_constraintStart_toEndOf="@+id/tv_diet_date_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

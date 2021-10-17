@@ -20,11 +20,17 @@ public class DietRecyclerAdapter extends RecyclerView.Adapter<DietRecyclerAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView dateText;
         private TextView caloriesText;
+        private TextView proteinText;
+        private TextView carbText;
+        private TextView fatText;
 
         public MyViewHolder(final View view) {
             super(view);
             dateText = view.findViewById(R.id.tv_dietList_date);
             caloriesText = view.findViewById(R.id.tv_dietList_calories);
+            proteinText = view.findViewById(R.id.tv_dietList_protein);
+            carbText = view.findViewById(R.id.tv_dietList_carb);
+            fatText = view.findViewById(R.id.tv_dietList_fat);
         }
     }
 
@@ -39,9 +45,15 @@ public class DietRecyclerAdapter extends RecyclerView.Adapter<DietRecyclerAdapte
     public void onBindViewHolder(@NonNull DietRecyclerAdapter.MyViewHolder holder, int position) {
         String date = dietList.get(position).getDate();
         int calories = dietList.get(position).getCalories();
+        int protein = dietList.get(position).getProtein();
+        int carb = dietList.get(position).getCarb();
+        int fat = dietList.get(position).getFat();
 
         holder.dateText.setText(date);
         holder.caloriesText.setText(String.valueOf(calories));
+        holder.proteinText.setText(String.valueOf(protein));
+        holder.carbText.setText(String.valueOf(carb));
+        holder.fatText.setText(String.valueOf(fat));
     }
 
     @Override
