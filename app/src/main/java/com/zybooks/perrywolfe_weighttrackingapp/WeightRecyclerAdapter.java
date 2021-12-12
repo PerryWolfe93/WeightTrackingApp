@@ -37,7 +37,7 @@ public class WeightRecyclerAdapter extends RecyclerView.Adapter<WeightRecyclerAd
     @Override
     public void onBindViewHolder(@NonNull WeightRecyclerAdapter.MyViewHolder holder, int position) {
         String date = weightList.get(position).getDate();
-        float weight = weightList.get(position).getWeight();
+        double weight = weightList.get(position).getWeight();
 
         holder.dateText.setText(date);
         holder.weightText.setText(String.valueOf(weight));

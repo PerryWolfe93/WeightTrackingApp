@@ -10,7 +10,8 @@
     <string name="et_exercise_time">Minutes Exercised</string>
     <string name="btn_exercise_back">Back</string>
     <string name="btn_exercise_enter">Enter</string>
-    
+    <string name="tv_exercise_recommendation">Recommendation</string>
+
     <string-array name="spn_exercises">
         <item></item>
         <item>Running</item>

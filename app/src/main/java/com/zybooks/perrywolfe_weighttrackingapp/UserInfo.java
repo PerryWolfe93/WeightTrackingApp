@@ -1,19 +1,32 @@
 package com.zybooks.perrywolfe_weighttrackingapp;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import static java.time.temporal.ChronoUnit.DAYS;
+
 public class UserInfo {
 
     private String gender;
     private int age;
     private int height;
-    private float goalWeight;
     private String fitnessPlan;
+    private double BMR;
+    private double activityLevel;
+    private String lastEvaluationDate;
+    private double currentWeight;
+    private double bmrAdjustment;
 
-    public UserInfo(String gender, int age, int height, float goalWeight, String fitnessPlan) {
+    public UserInfo(String gender, int age, int height, String fitnessPlan, double BMR, double activityLevel, String lastEvaluationDate, double currentWeight, double bmrAdjustment) {
         this.gender = gender;
         this.age = age;
         this.height = height;
-        this.goalWeight = goalWeight;
         this.fitnessPlan = fitnessPlan;
+        this.BMR = BMR;
+        this.activityLevel = activityLevel;
+        this.lastEvaluationDate = lastEvaluationDate;
+        this.currentWeight = currentWeight;
+        this.bmrAdjustment = bmrAdjustment;
     }
 
     // Getters
@@ -26,10 +39,12 @@ public class UserInfo {
     public int getHeight() {
         return height;
     }
-    public float getGoalWeight() {
-        return goalWeight;
-    }
     public String getFitnessPlan() { return fitnessPlan; }
+    public double getBMR() { return BMR; }
+    public double getActivityLevel() { return activityLevel; }
+    public String getLastEvaluationDate() { return lastEvaluationDate; }
+    public double getCurrentWeight() { return currentWeight; }
+    public double getBmrAdjustment() { return bmrAdjustment; }
 
     // Setters
     public void setGender(String gender) {
@@ -41,8 +56,10 @@ public class UserInfo {
     public void setHeight(int height) {
         this.height = height;
     }
-    public void setGoalWeight(float goalWeight) {
-        this.goalWeight = goalWeight;
-    }
-    public void setFitnessPlan(String fitnessPlan) {this.fitnessPlan = fitnessPlan; }
+    public void setFitnessPlan(String fitnessPlan) { this.fitnessPlan = fitnessPlan; }
+    public void setBMR(double BMR) { this.BMR = BMR; }
+    public void setActivityLevel(double activityLevel) { this.activityLevel = activityLevel; }
+    public void setLastEvaluationDate(String lastEvaluationDate) { this.lastEvaluationDate = lastEvaluationDate; }
+    public void setCurrentWeight(double currentWeight)  { this.currentWeight = currentWeight; }
+    public void setBmrAdjustment(double bmrAdjustment) { this.bmrAdjustment = bmrAdjustment; }
 }

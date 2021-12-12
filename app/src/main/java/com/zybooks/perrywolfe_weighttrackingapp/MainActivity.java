@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private Button login, forgotUsername, forgotPassword, newUser;
     DatabaseHelper weightTrackerDB;
 
-    // private static final int REQUEST_CODE = 200;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

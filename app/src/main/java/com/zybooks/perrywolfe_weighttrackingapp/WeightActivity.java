@@ -9,17 +9,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.LocalDate;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class WeightActivity extends AppCompatActivity {
 
     // Variable declarations
     private EditText currentWeight;
-    private Button enterWeight, back;
     private RecyclerView recyclerView;
-    private DatabaseHelper weightTrackerDB;
+    private DatabaseHelper fitnessAppDB;
+    private UserInfo userInfo;
+    private TextView userRecommendation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,39 +31,78 @@ public class WeightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weight);
 
         // Initialize instance of DatabaseHelper
-        weightTrackerDB = new DatabaseHelper(WeightActivity.this);
+        fitnessAppDB = new DatabaseHelper(WeightActivity.this);
 
         // Assign values to widget variables
         recyclerView = findViewById(R.id.rv_weight_list);
         currentWeight = findViewById(R.id.et_weight_editCurrentWeight);
-        enterWeight = findViewById(R.id.btn_weight_changeWeight);
-        back = findViewById(R.id.btn_weight_back);
+        Button enterWeight = findViewById(R.id.btn_weight_changeWeight);
+        Button back = findViewById(R.id.btn_weight_back);
+        userRecommendation = findViewById(R.id.tv_weight_recommendation);
+
+        // Retrieve current user information
+        userInfo = fitnessAppDB.getCurrentUserInfo();
 
         // Set click listeners for buttons
         enterWeight.setOnClickListener(v -> {
             String date = LocalDate.now().toString();
-            float weight = Float.valueOf(currentWeight.getText().toString());
+            double weight = Float.valueOf(currentWeight.getText().toString());
 
             if(currentWeight.equals("")) {
                 Toast.makeText(WeightActivity.this, "Please Enter Your Weight", Toast.LENGTH_SHORT).show();
-            } else if(weightTrackerDB.checkForWeightData()) {
+            } else if(fitnessAppDB.checkForWeightData()) {
                 Weight weightEntry = new Weight(weight, date);
-                weightTrackerDB.updateWeight(weightEntry);
+                fitnessAppDB.updateWeight(weightEntry);
                 setAdapter();
             } else {
                 Weight weightEntry = new Weight(weight, date);
-                weightTrackerDB.addOneWeight(weightEntry);
+                fitnessAppDB.addOneWeight(weightEntry);
                 setAdapter();
             }
+            userInfo.setCurrentWeight(weight);
+            fitnessAppDB.updateUserInfo(userInfo);
         });
 
         back.setOnClickListener(v -> openUserProfileActivity());
 
         setAdapter();
+        getRecommendation();
+    }
+
+    private void getRecommendation() {
+
+        double weightChange = fitnessAppDB.getWeeklyWeightAverageDifference();
+
+        // Returns if user does not have at least one data entry per each of the past two weeks
+        if(weightChange <= -101) {
+            userRecommendation.setText("Keep recording your weights everyday for the most accurate feedback.");
+            return;
+        }
+
+        // If user is gaining weight rapidly
+        if(weightChange > 2.5) {
+            userRecommendation.setText("You are gaining weight rapidly.");
+        }
+        // If user is gaining weight slowly
+        else if(weightChange > 1.0) {
+            userRecommendation.setText("You are gradually gaining weight.");
+        }
+        // If user is maintaining their weight
+        else if(weightChange > -1.0) {
+            userRecommendation.setText("You are maintaining your weight.");
+        }
+        // If user is losing weight slowly
+        else if(weightChange > -2.5) {
+            userRecommendation.setText("You are gradually losing weight.");
+        }
+        // If user is losing weight rapidly
+        else {
+            userRecommendation.setText("You are losing weight rapidly.");
+        }
     }
 
     private void setAdapter() {
-        WeightRecyclerAdapter adapter = new WeightRecyclerAdapter(weightTrackerDB.getWeightList());
+        WeightRecyclerAdapter adapter = new WeightRecyclerAdapter(fitnessAppDB.getWeightList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

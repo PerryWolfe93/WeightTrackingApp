@@ -6,4 +6,5 @@
     <string name="btn_weight_back">Back</string>
     <string name="tv_weight_date_title">Date</string>
     <string name="tv_weight_weight_title">Weight</string>
+    <string name="tv_weight_recommendation">Recommendation</string>
 </resources>

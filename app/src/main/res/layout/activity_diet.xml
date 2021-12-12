@@ -165,4 +165,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_diet_userRecommendation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/tv_diet_userRecommendation"
+        app:layout_constraintBottom_toTopOf="@+id/btn_diet_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_diet_list" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

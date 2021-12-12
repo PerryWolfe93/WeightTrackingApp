@@ -2,15 +2,15 @@ package com.zybooks.perrywolfe_weighttrackingapp;
 
 public class Weight {
 
-    private float weight;
+    private double weight;
     private String date;
 
-    public Weight(float weight, String date) {
+    public Weight(double weight, String date) {
         this.weight = weight;
         this.date = date;
     }
 
-    public float getWeight() {
+    public double getWeight() {
         return weight;
     }
 

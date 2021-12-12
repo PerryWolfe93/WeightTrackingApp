@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.LocalDate;
@@ -21,10 +23,9 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
 
     // Variable Declarations
     private RecyclerView recyclerView;
+    private TextView userRecommendation;
     private EditText exerciseTime;
-    private Button enter, back;
-    private DatabaseHelper weightTrackerDB;
-    private Spinner chooseExercise;
+    private DatabaseHelper fitnessAppDB;
     private String exerciseChoice;
 
     @Override
@@ -33,14 +34,15 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_exercise);
 
         // Initialize instance of DatabaseHelper
-        weightTrackerDB = new DatabaseHelper(ExerciseActivity.this);
+        fitnessAppDB = new DatabaseHelper(ExerciseActivity.this);
 
         // Assign values to widget variables
         recyclerView = findViewById(R.id.rv_exercise_list);
         exerciseTime = findViewById(R.id.et_exercise_time);
-        enter = findViewById(R.id.btn_exercise_enter);
-        back = findViewById(R.id.btn_exercise_back);
-        chooseExercise = findViewById(R.id.spn_exercise_exerciseType);
+        Button enter = findViewById(R.id.btn_exercise_enter);
+        Button back = findViewById(R.id.btn_exercise_back);
+        Spinner chooseExercise = findViewById(R.id.spn_exercise_exerciseType);
+        userRecommendation = findViewById(R.id.tv_exercise_recommendation);
 
         // Spinner Variables
         ArrayAdapter<CharSequence> exerciseChoiceAdapter = ArrayAdapter.createFromResource(this, R.array.spn_exercises, android.R.layout.simple_spinner_item);
@@ -53,27 +55,30 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
 
         enter.setOnClickListener(v -> {
             String date = LocalDate.now().toString();
-            int time = Integer.valueOf(exerciseTime.getText().toString());
+            int time = Integer.parseInt(exerciseTime.getText().toString());
 
-            if(exerciseTime.equals("")) {
+            if(exerciseTime.getText().toString().equals("")) {
                 Toast.makeText(ExerciseActivity.this, "Please enter the amount of time you exercised", Toast.LENGTH_SHORT).show();
             } else if(exerciseChoice.equals("")) {
                 Toast.makeText(ExerciseActivity.this, "Please select an exercise.", Toast.LENGTH_SHORT).show();
-            } else if(weightTrackerDB.checkForExerciseData()) {
+            } else if(fitnessAppDB.checkForExerciseData()) {
                 Toast.makeText(ExerciseActivity.this, "An exercise has already been entered for today", Toast.LENGTH_SHORT).show();
             } else {
                 Exercise exercise = new Exercise(date, exerciseChoice, time);
-                weightTrackerDB.addOneExercise(exercise);
+                fitnessAppDB.addOneExercise(exercise);
                 setAdapter();
             }
         });
         back.setOnClickListener(v -> openUserProfileActivity());
 
+        // Generates list of previous exercises from database
         setAdapter();
+        // Sets user recommendation text view
+        getRecommendation();
     }
 
     private void setAdapter() {
-        ExerciseRecyclerAdapter adapter = new ExerciseRecyclerAdapter(weightTrackerDB.getExerciseList());
+        ExerciseRecyclerAdapter adapter = new ExerciseRecyclerAdapter(fitnessAppDB.getExerciseList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -89,5 +94,37 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void getRecommendation() {
+
+        int timeExercisedLastWeek = fitnessAppDB.getLastWeekExerciseTime();
+
+        if(timeExercisedLastWeek <= 0) {
+            userRecommendation.setText("You did not record any exercises last week." +
+                    "\nYou should aim to get at least 150 minutes of exercise per week.");
+        } else if(timeExercisedLastWeek < 30) {
+            userRecommendation.setText("Good job getting some exercise last week." +
+                    "\nYou got " + timeExercisedLastWeek + " minutes of exercise." +
+                    "\nNext week try to exercise even more.");
+        } else if(timeExercisedLastWeek <= 60) {
+            userRecommendation.setText("Great effort setting aside time for fitness!" +
+                    "\nYou exercised for " + timeExercisedLastWeek + " minutes.");
+        } else if(timeExercisedLastWeek <= 120) {
+            userRecommendation.setText("You nearly reached the weekly recommendation last week." +
+                    "\nYou got " + timeExercisedLastWeek + " minutes of exercise.");
+        }else if(timeExercisedLastWeek <= 150) {
+            userRecommendation.setText("Amazing! You reached the weekly recommendation." +
+                    "\nYou exercised for " + timeExercisedLastWeek + " minutes." +
+                    "\nKeep up the good work!");
+        } else if(timeExercisedLastWeek <= 210) {
+            userRecommendation.setText("Your commitment to fitness is inspiring." +
+                    "\nYou exercised for " + timeExercisedLastWeek + " minutes this week");
+        } else {
+            userRecommendation.setText("Congratulations! You have achieved a perfect week!" +
+                    "\nYou exercised for " + timeExercisedLastWeek + " minutes." +
+                    "\nKeep up the good work and don't forget to let yourself rest");
+        }
     }
 }

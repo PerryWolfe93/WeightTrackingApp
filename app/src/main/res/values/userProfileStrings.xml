@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tv_userProfile_title">User Name</string>
-    <string name="et_userProfile_goalWeight">Goal Weight</string>
-    <string name="et_userProfile_currentWeight">Current Weight</string>
-    <string name="btn_userProfile_enterCurrentWeight">Enter Weight</string>
-    <string name="btn_userProfile_enterGoalWeight">Enter Weight</string>
     <string name="btn_userProfile_weight">Weight</string>
     <string name="btn_userProfile_exercise">Exercise</string>
     <string name="btn_userProfile_diet">Diet</string>

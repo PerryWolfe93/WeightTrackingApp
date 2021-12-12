@@ -190,34 +190,6 @@
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/et_userProfile_goalWeight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autofillHints="@string/et_userProfile_goalWeight"
-                android:hint="@string/et_userProfile_goalWeight"
-                android:inputType="numberDecimal" />
-
-            <Button
-                android:id="@+id/btn_userProfile_enterGoalWeight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_userProfile_enterGoalWeight" />
-
-            <TextView
-                android:id="@+id/tv_userProfile_goalWeightData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_userProfile_goalWeightData"
-                android:visibility="gone" />
-        </LinearLayout>
-
         <Button
             android:id="@+id/btn_userProfile_edit"
             android:layout_width="wrap_content"
