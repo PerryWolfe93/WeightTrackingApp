@@ -11,17 +11,17 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.time.LocalDate;
 
-public class DietActivity extends AppCompatActivity {
+public class DietActivity extends AppCompatActivity implements DietRecyclerAdapter.OnDietListener {
 
     // Variable Declarations
     private DatabaseHelper fitnessAppDB;
     private RecyclerView recyclerView;
-    private EditText enterCalories, enterProtein, enterCarb, enterFat;
+    private EditText enterFood, enterCalories, enterProtein, enterCarb, enterFat;
     private TextView userRecommendation;
-    private Diet diet;
     private UserInfo userInfo;
 
     public DietActivity() {
@@ -41,41 +41,37 @@ public class DietActivity extends AppCompatActivity {
         enterProtein = findViewById(R.id.et_diet_protein);
         enterCarb = findViewById(R.id.et_diet_carb);
         enterFat = findViewById(R.id.et_diet_fat);
+        enterFood = findViewById(R.id.et_diet_food);
         Button add = findViewById(R.id.btn_diet_add);
-        Button subtract = findViewById(R.id.btn_diet_subtract);
         Button back = findViewById(R.id.btn_diet_back);
         userRecommendation = findViewById(R.id.tv_diet_userRecommendation);
 
         userInfo = fitnessAppDB.getCurrentUserInfo();
 
         // If today's date is not in the database, create new entry, else get data from database
-        if(!fitnessAppDB.checkForCalorieData()) {
-            diet = new Diet(LocalDate.now().toString(), 0, 0, 0, 0);
-            fitnessAppDB.addOneDiet(diet);
-        } else {
-            diet = fitnessAppDB.getCurrentDiet();
+        if(!fitnessAppDB.checkForDietData()) {
+            fitnessAppDB.addOneDiet();
         }
 
         // Set click listeners
 
         // Button for adding to calories/protein/carb/fat
         add.setOnClickListener(v -> {
-            diet.setCalories(diet.getCalories() + Integer.parseInt(enterCalories.getText().toString()));
-            diet.setProtein(diet.getProtein() + Integer.parseInt(enterProtein.getText().toString()));
-            diet.setCarb(diet.getCarb() + Integer.parseInt(enterCarb.getText().toString()));
-            diet.setFat(diet.getFat() + Integer.parseInt(enterFat.getText().toString()));
-            fitnessAppDB.updateDiet(diet);
-            setAdapter();
+            if(enterFood.equals("") || enterCalories.equals("")) {
+                Toast.makeText(this, "Please fill in the food and calorie fields to log food.", Toast.LENGTH_SHORT).show();
+            } else {
+                String foodName = enterFood.getText().toString();
+                int calories = Integer.parseInt(enterCalories.getText().toString());
+                int protein = Integer.parseInt(enterProtein.getText().toString());
+                int carbs = Integer.parseInt(enterCarb.getText().toString());
+                int fat = Integer.parseInt(enterFat.getText().toString());
+
+                Food food = new Food(foodName, calories, protein, carbs, fat);
+                fitnessAppDB.addOneFood(food);
+            }
         });
-        // Button for subtracting from calories/protein/carb/fat
-        subtract.setOnClickListener(v -> {
-            diet.setCalories(diet.getCalories() - Integer.parseInt(enterCalories.getText().toString()));
-            diet.setProtein(diet.getProtein() - Integer.parseInt(enterProtein.getText().toString()));
-            diet.setCarb(diet.getCarb() - Integer.parseInt(enterCarb.getText().toString()));
-            diet.setFat(diet.getFat() - Integer.parseInt(enterFat.getText().toString()));
-            fitnessAppDB.updateDiet(diet);
-            setAdapter();
-        });
+
+
         // Button for moving back to the user profile page
         back.setOnClickListener(v -> openUserProfileActivity());
 
@@ -87,7 +83,7 @@ public class DietActivity extends AppCompatActivity {
 
     // Method for populating the recyclerview with data from the diet data table
     private void setAdapter() {
-        DietRecyclerAdapter adapter = new DietRecyclerAdapter(fitnessAppDB.getDietList());
+        DietRecyclerAdapter adapter = new DietRecyclerAdapter(fitnessAppDB.getDietList(), this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -165,6 +161,13 @@ public class DietActivity extends AppCompatActivity {
     // Method for opening the user profile
     public void openUserProfileActivity() {
         Intent intent = new Intent(this, UserProfileActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnDietClick(int position) {
+        Intent intent = new Intent(this, FoodActivity.class);
+        Food.dateClicked = fitnessAppDB.getDietList().get(position).getDate();
         startActivity(intent);
     }
 }

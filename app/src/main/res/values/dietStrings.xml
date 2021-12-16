@@ -14,4 +14,5 @@
     <string name="et_diet_carb">Carb</string>
     <string name="et_diet_fat">Fat</string>
     <string name="tv_diet_userRecommendation">Recommendation</string>
+    <string name="et_diet_food">Food</string>
 </resources>

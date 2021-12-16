@@ -1,47 +1,29 @@
 package com.zybooks.perrywolfe_weighttrackingapp;
 
+import java.util.ArrayList;
+
 public class Diet {
     private String date;
-    private int calories;
-    private int protein;
-    private int carb;
-    private int fat;
+    private ArrayList<Food> foodList;
 
-    public Diet(String date, int calories, int protein, int carb, int fat) {
+    public Diet(String date) {
         this.date = date;
-        this.calories = calories;
-        this.protein = protein;
-        this.carb = carb;
-        this.fat = fat;
+        this.foodList = new ArrayList<>();
+    }
+    public Diet(String date, ArrayList<Food> foodList) {
+        this.date = date;
+        this.foodList = foodList;
     }
 
     public String getDate() {
         return date;
     }
-    public int getCalories() {
-        return calories;
-    }
-    public int getProtein() {
-        return protein;
-    }
-    public int getCarb() {
-        return carb;
-    }
-    public int getFat() {
-        return fat;
+
+    public ArrayList<Food> getFoodList() {
+        return foodList;
     }
 
-    public void setCalories(int calories) {
-        this.calories = calories;
+    public void setFoodList(ArrayList<Food> foodList) {
+        this.foodList = foodList;
     }
-    public void setProtein(int protein) {
-        this.protein = protein;
-    }
-    public void setCarb(int carb) {
-        this.carb = carb;
-    }
-    public void setFat(int fat) {
-        this.fat = fat;
-    }
-
 }

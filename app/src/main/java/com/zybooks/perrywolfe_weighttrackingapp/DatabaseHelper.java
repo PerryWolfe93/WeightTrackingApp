@@ -5,9 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -40,6 +44,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Diet Data Table Constants
     public static final String DIET_DATA_TABLE = "DIET_DATA_TABLE";
+
+    // Food Data Table Constants
+    public static final String FOOD_DATA_TABLE = "FOOD_DATA_TABLE";
+    public static final String COLUMN_FOOD = "FOOD";
     public static final String COLUMN_CALORIES = "CALORIES";
     public static final String COLUMN_PROTEIN = "PROTEIN";
     public static final String COLUMN_CARB = "CARB";
@@ -91,12 +99,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String dietDataTable = "CREATE TABLE " + DIET_DATA_TABLE + " (" +
                 USER_ID + " INTEGER, " +
-                COLUMN_CALORIES + " INTEGER, " +
+                COLUMN_DATE + " TEXT)";
+        fitnessAppDB.execSQL(dietDataTable);
+
+        String foodDataTable = "CREATE TABLE " + FOOD_DATA_TABLE + " (" +
+                USER_ID + " INTEGER, " +
                 COLUMN_DATE + " TEXT, " +
+                COLUMN_FOOD + " TEXT, " +
+                COLUMN_CALORIES + " INTEGER, " +
                 COLUMN_PROTEIN + " INTEGER, " +
                 COLUMN_CARB + " INTEGER, " +
                 COLUMN_FAT + " INTEGER)";
-        fitnessAppDB.execSQL(dietDataTable);
+        fitnessAppDB.execSQL(foodDataTable);
 
         String exerciseDataTable = "CREATE TABLE " + EXERCISE_DATA_TABLE + " (" +
                 USER_ID + " INTEGER, " +
@@ -129,14 +143,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
         cursor.moveToFirst();
         int data = cursor.getInt(0);
-        cursor.close();
-        return data;
-    }
-    public double getFloatData(String column, String table) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-        cursor.moveToFirst();
-        double data = cursor.getDouble(0);
         cursor.close();
         return data;
     }
@@ -347,111 +353,169 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // Database methods for diet data
+    // Database methods for food and diet data
 
     // Checks database for diet table data from the current day
-    public boolean checkForCalorieData() {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+    public boolean checkForDietData() {
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
-    // Creates Diet object with current date's data
-    public Diet getCurrentDiet() {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
-        cursor.moveToFirst();
-        return new Diet(cursor.getString(0), 0, 0, 0, 0);
-    }
     // Inserts a diet into the database
-    public boolean addOneDiet(Diet diet) {
-        SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
+    public boolean addOneDiet() {
+        SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         
         cv.put(USER_ID, getUserID(User.currentUser));
-        cv.put(COLUMN_CALORIES, diet.getCalories());
-        cv.put(COLUMN_DATE, diet.getDate());
-        cv.put(COLUMN_PROTEIN, diet.getProtein());
-        cv.put(COLUMN_CARB, diet.getCarb());
-        cv.put(COLUMN_FAT, diet.getFat());
+        cv.put(COLUMN_DATE, LocalDate.now().toString());
         
-        long insert = weightTrackerDB.insert(DIET_DATA_TABLE, null, cv);
+        long insert = fitnessAppDB.insert(DIET_DATA_TABLE, null, cv);
         return insert != -1;
     }
-    // Updates the current date's data
-    public boolean updateDiet(Diet diet) {
-        SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
+    // Inserts a food into the database
+    public boolean addOneFood(Food food) {
+        SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(USER_ID, getUserID(User.currentUser));
-        cv.put(COLUMN_CALORIES, diet.getCalories());
-        cv.put(COLUMN_DATE, diet.getDate());
-        cv.put(COLUMN_PROTEIN, diet.getProtein());
-        cv.put(COLUMN_CARB, diet.getCarb());
-        cv.put(COLUMN_FAT, diet.getFat());
-        
-        long update = weightTrackerDB.update(DIET_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
-        return update != -1;
+        cv.put(COLUMN_DATE, LocalDate.now().toString());
+        cv.put(COLUMN_CALORIES, food.getCalories());
+        cv.put(COLUMN_PROTEIN, food.getProtein());
+        cv.put(COLUMN_CARB, food.getCarbs());
+        cv.put(COLUMN_FAT, food.getFat());
+
+        long insert = fitnessAppDB.insert(FOOD_DATA_TABLE, null, cv);
+        return insert != -1;
     }
     // Generates a list of diet data to use in the diet recyclerview
     public ArrayList<Diet> getDietList() {
         ArrayList<Diet> dietList = new ArrayList<>();
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
         
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-        
+        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+
         if(cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(0);
-                int calories = cursor.getInt(1);
-                int protein = cursor.getInt(2);
-                int carb = cursor.getInt(3);
-                int fat = cursor.getInt(4);
+                ArrayList<Food> foodList = new ArrayList<>();
 
-                Diet dietObj = new Diet(date, calories, protein, carb, fat);
+                Cursor cursorTwo = fitnessAppDB.rawQuery("Select " + COLUMN_FOOD + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+
+                if(cursorTwo.moveToFirst()) {
+                    do {
+                        String foodName = cursorTwo.getString(0);
+                        int calories = cursorTwo.getInt(1);
+                        int protein = cursorTwo.getInt(2);
+                        int carbs = cursorTwo.getInt(3);
+                        int fat = cursorTwo.getInt(4);
+
+                        Food food = new Food(foodName, calories, protein, carbs, fat);
+                        foodList.add(food);
+
+                    } while(cursorTwo.moveToNext());
+                }
+
+                Diet dietObj = new Diet(date, foodList);
                 dietList.add(dietObj);
 
             } while(cursor.moveToNext());
-        } else {
-            // Empty cursor
         }
+
         cursor.close();
         return dietList;
+    }
+    // Generates a list of food data to use in the food recyclerview
+    public ArrayList<Food> getFoodList() {
+        ArrayList<Food> foodList = new ArrayList<>();
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+
+        if(cursor.moveToFirst()) {
+            do {
+
+                String foodName = cursor.getString(0);
+                int calories = cursor.getInt(1);
+                int protein = cursor.getInt(2);
+                int carbs = cursor.getInt(3);
+                int fat = cursor.getInt(4);
+
+                Food food = new Food(foodName, calories, protein, carbs, fat);
+                foodList.add(food);
+
+            } while(cursor.moveToNext());
+        } else {
+            return  foodList;
+        }
+
+        cursor.close();
+
+        ArrayList<Food> sortedFoodList = new ArrayList<>();
+
+        sortedFoodList.add(foodList.get(0));
+
+        for(int i = 1; i < foodList.size(); i++) {
+            for(int j = 0; j < sortedFoodList.size(); j++) {
+                if(foodList.get(i).getName().compareTo(sortedFoodList.get(j).getName()) > 0) {
+                    Food temp = sortedFoodList.get(j);
+                    sortedFoodList.remove(j);
+                    sortedFoodList.add(j, foodList.get(i));
+                    sortedFoodList.add(j+ 1, temp);
+                    break;
+                }
+                if(j == sortedFoodList.size() - 1) {
+                    sortedFoodList.add(foodList.get(i));
+                    break;
+                }
+            }
+        }
+
+        return sortedFoodList;
     }
     // Returns daily average of calories from entries within the last week
     public double getLastWeekAverageCalories() {
 
-        int totalCalories = 0;
-        int numberOfEntries = 0;
-        int averageCalories = 0;
+        double totalCalories = 0;
+        double numberOfEntries = 0;
+        boolean flag = true;
 
         SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
-        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_CALORIES + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
 
         if(cursor.moveToLast()) {
             do {
-                int count = 0;
                 String date = cursor.getString(0);
-                int calories = cursor.getInt(1);
 
                 for(int i = 1; i < 7; i++) {
                     if(date.equals(LocalDate.now().plus(-i, ChronoUnit.DAYS).toString())) {
-                        numberOfEntries++;
-                        totalCalories += calories;
+
+                        Cursor cursorTwo = fitnessAppDB.rawQuery("Select " + COLUMN_CALORIES + " from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {date});
+
+                        if(cursorTwo.moveToFirst()) {
+                            do {
+                                totalCalories += cursorTwo.getInt(1);
+                            } while (cursorTwo.moveToNext());
+                            numberOfEntries++;
+                        }
+                        break;
+                    } else {
+                        flag = false;
                     }
                 }
-                count++;
-                if(count > 6) {
+                if(numberOfEntries > 6) {
                     break;
                 }
-            } while(cursor.moveToPrevious());
+            } while(cursor.moveToPrevious() && flag);
+        } else {
+            cursor.close();
+            return 0;
         }
 
         cursor.close();
 
-        averageCalories = totalCalories / numberOfEntries;
-        return averageCalories;
+        return totalCalories / numberOfEntries;
     }
 
 

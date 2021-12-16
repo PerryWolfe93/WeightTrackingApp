@@ -1,10 +1,5 @@
 package com.zybooks.perrywolfe_weighttrackingapp;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-
-import static java.time.temporal.ChronoUnit.DAYS;
-
 public class UserInfo {
 
     private String gender;
