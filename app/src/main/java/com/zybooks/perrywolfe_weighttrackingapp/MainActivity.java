@@ -3,14 +3,21 @@ package com.zybooks.perrywolfe_weighttrackingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private Button login, forgotUsername, forgotPassword, newUser;
     DatabaseHelper weightTrackerDB;
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         forgotUsername = findViewById(R.id.btn_forgotUsername);
         forgotPassword = findViewById(R.id.btn_forgotPassword);
         newUser = findViewById(R.id.btn_newUser);
+        Switch onlineModeSwitch = findViewById(R.id.sw_login_onlineMode);
         weightTrackerDB = new DatabaseHelper(this);
 
         // Set click listeners for all buttons
@@ -59,6 +68,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         newUser.setOnClickListener(v -> openNewUserActivity());
+
+        onlineModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                Connection connection = connectionClass();
+                try {
+                    if(connection != null) {
+
+                    }
+                } catch (Exception exception) {
+                    Log.e("Error",exception.getMessage());
+                }
+            } else {
+
+            }
+        });
     }
 
     // Activity change methods
@@ -69,6 +93,22 @@ public class MainActivity extends AppCompatActivity {
     public void openUserProfileActivity() {
         Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
+    }
+
+    public Connection connectionClass() {
+        Connection con = null;
+        String ip = "10.0.0.224", port = "1433", username = "sa", password = "2fy9xjcdv2", databaseName = "fitnessAppDB";
+        StrictMode.ThreadPolicy tp = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(tp);
+        try {
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            String connectionUrl = "jdbc:jtds:sqlserver://" + ip + ":" + port + ";databasename=" + databaseName + ";User=" + username + ";password=" + password + ";";
+            con = DriverManager.getConnection(connectionUrl);
+        }
+        catch (Exception exception) {
+            Log.e("Error", exception.getMessage());
+        }
+        return con;
     }
 }
 

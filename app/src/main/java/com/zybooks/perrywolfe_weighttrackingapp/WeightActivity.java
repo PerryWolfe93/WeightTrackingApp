@@ -46,21 +46,31 @@ public class WeightActivity extends AppCompatActivity {
         // Set click listeners for buttons
         enterWeight.setOnClickListener(v -> {
             String date = LocalDate.now().toString();
-            double weight = Float.valueOf(currentWeight.getText().toString());
-
-            if(currentWeight.equals("")) {
-                Toast.makeText(WeightActivity.this, "Please Enter Your Weight", Toast.LENGTH_SHORT).show();
-            } else if(fitnessAppDB.checkForWeightData()) {
-                Weight weightEntry = new Weight(weight, date);
-                fitnessAppDB.updateWeight(weightEntry);
-                setAdapter();
-            } else {
-                Weight weightEntry = new Weight(weight, date);
-                fitnessAppDB.addOneWeight(weightEntry);
-                setAdapter();
+            boolean isDouble = true;
+            try {
+                Double.parseDouble(currentWeight.getText().toString());
+            } catch (NumberFormatException | NullPointerException nfe) {
+                isDouble = false;
             }
-            userInfo.setCurrentWeight(weight);
-            fitnessAppDB.updateUserInfo(userInfo);
+
+            if(isDouble) {
+                double weight = Double.parseDouble(currentWeight.getText().toString());
+
+                if(fitnessAppDB.checkForWeightData()) {
+                    Weight weightEntry = new Weight(weight, date);
+                    fitnessAppDB.updateWeight(weightEntry);
+                    setAdapter();
+                } else {
+                    Weight weightEntry = new Weight(weight, date);
+                    fitnessAppDB.addOneWeight(weightEntry);
+                    setAdapter();
+                }
+                userInfo.setCurrentWeight(weight);
+                fitnessAppDB.updateUserInfo(userInfo);
+
+            } else {
+                Toast.makeText(WeightActivity.this, "Please Enter Your Weight", Toast.LENGTH_SHORT).show();
+            }
         });
 
         back.setOnClickListener(v -> openUserProfileActivity());
@@ -74,7 +84,7 @@ public class WeightActivity extends AppCompatActivity {
         double weightChange = fitnessAppDB.getWeeklyWeightAverageDifference();
 
         // Returns if user does not have at least one data entry per each of the past two weeks
-        if(weightChange <= -101) {
+        if(weightChange <= -99) {
             userRecommendation.setText("Keep recording your weights everyday for the most accurate feedback.");
             return;
         }
@@ -97,7 +107,7 @@ public class WeightActivity extends AppCompatActivity {
         }
         // If user is losing weight rapidly
         else {
-            userRecommendation.setText("You are losing weight rapidly.");
+            userRecommendation.setText("You are losing weight rapidly." + weightChange);
         }
     }
 

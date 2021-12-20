@@ -24,9 +24,6 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
     private TextView userRecommendation;
     private UserInfo userInfo;
 
-    public DietActivity() {
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +93,8 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
         String currentPlan = userInfo.getFitnessPlan();
         double finalBmr = userInfo.getBMR() + userInfo.getBmrAdjustment();
         double bmrAdjustment = userInfo.getBmrAdjustment();
-        double calorieDifferenceFromGoal = fitnessAppDB.getLastWeekAverageCalories() - userInfo.getBMR();
-        double weightChange = fitnessAppDB.getWeeklyWeightAverageDifference();
+        double calorieDifferenceFromGoal = userInfo.getCalorieDifferenceFromGoal();
+        double weightChange = userInfo.getWeightChange();
 
 
         if(currentPlan.equals("")) {
@@ -110,6 +107,9 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
             userRecommendation.setText("For an accurate recommendation, you must meet your calorie " +
                     "goal as close as possible.\nAlso be sure to record everything you eat or" +
                     "your bmr will not be adjusted correctly. You can do it!");
+        } else if(weightChange < -99) {
+            userRecommendation.setText("Enter your information daily to get the most accurate feedback." +
+                    "\nCurrently your calorie goal is " + finalBmr);
         } else if(currentPlan.equals("Gain Muscle")) {
             if(weightChange > 1.5) {
                 userRecommendation.setText("Great job meeting your calorie goal!\nYou are " +

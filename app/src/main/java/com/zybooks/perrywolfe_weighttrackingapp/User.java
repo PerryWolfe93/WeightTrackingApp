@@ -3,6 +3,7 @@ package com.zybooks.perrywolfe_weighttrackingapp;
 public class User {
 
     public static String currentUser;
+    public static boolean online;
     private String username;
     private String password;
     private String phoneNumber;

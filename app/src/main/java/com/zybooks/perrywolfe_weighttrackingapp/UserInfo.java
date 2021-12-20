@@ -11,8 +11,11 @@ public class UserInfo {
     private String lastEvaluationDate;
     private double currentWeight;
     private double bmrAdjustment;
+    private int lastWeekExerciseTime;
+    private double calorieDifferenceFromGoal;
+    private double weightChange;
 
-    public UserInfo(String gender, int age, int height, String fitnessPlan, double BMR, double activityLevel, String lastEvaluationDate, double currentWeight, double bmrAdjustment) {
+    public UserInfo(String gender, int age, int height, String fitnessPlan, double BMR, double activityLevel, String lastEvaluationDate, double currentWeight, double bmrAdjustment, int lastWeekExerciseTime, double calorieDifferenceFromGoal, double weightChange) {
         this.gender = gender;
         this.age = age;
         this.height = height;
@@ -22,6 +25,9 @@ public class UserInfo {
         this.lastEvaluationDate = lastEvaluationDate;
         this.currentWeight = currentWeight;
         this.bmrAdjustment = bmrAdjustment;
+        this.lastWeekExerciseTime = lastWeekExerciseTime;
+        this.calorieDifferenceFromGoal = calorieDifferenceFromGoal;
+        this.weightChange = weightChange;
     }
 
     // Getters
@@ -40,6 +46,13 @@ public class UserInfo {
     public String getLastEvaluationDate() { return lastEvaluationDate; }
     public double getCurrentWeight() { return currentWeight; }
     public double getBmrAdjustment() { return bmrAdjustment; }
+    public int getLastWeekExerciseTime() { return  lastWeekExerciseTime; }
+    public double getCalorieDifferenceFromGoal() {
+        return calorieDifferenceFromGoal;
+    }
+    public double getWeightChange() {
+        return weightChange;
+    }
 
     // Setters
     public void setGender(String gender) {
@@ -57,4 +70,11 @@ public class UserInfo {
     public void setLastEvaluationDate(String lastEvaluationDate) { this.lastEvaluationDate = lastEvaluationDate; }
     public void setCurrentWeight(double currentWeight)  { this.currentWeight = currentWeight; }
     public void setBmrAdjustment(double bmrAdjustment) { this.bmrAdjustment = bmrAdjustment; }
+    public void setLastWeekExerciseTime(int lastWeekExerciseTime) { this.lastWeekExerciseTime = lastWeekExerciseTime;}
+    public void setCalorieDifferenceFromGoal(double calorieDifferenceFromGoal) {
+        this.calorieDifferenceFromGoal = calorieDifferenceFromGoal;
+    }
+    public void setWeightChange(double weightChange) {
+        this.weightChange = weightChange;
+    }
 }

@@ -27,6 +27,7 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
     private EditText exerciseTime;
     private DatabaseHelper fitnessAppDB;
     private String exerciseChoice;
+    private UserInfo userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,8 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
 
         // Initialize instance of DatabaseHelper
         fitnessAppDB = new DatabaseHelper(ExerciseActivity.this);
+
+        userInfo = fitnessAppDB.getCurrentUserInfo();
 
         // Assign values to widget variables
         recyclerView = findViewById(R.id.rv_exercise_list);
@@ -99,7 +102,7 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
     @SuppressLint("SetTextI18n")
     private void getRecommendation() {
 
-        int timeExercisedLastWeek = fitnessAppDB.getLastWeekExerciseTime();
+        int timeExercisedLastWeek = userInfo.getLastWeekExerciseTime();
 
         if(timeExercisedLastWeek <= 0) {
             userRecommendation.setText("You did not record any exercises last week." +

@@ -66,7 +66,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // If user info is not in database, add to database, else retrieve current user information
         if(!fitnessAppDB.checkUserInfo(fitnessAppDB.getUserID(User.currentUser))) {
-            userInfo = new UserInfo("", 0, 0, null, 0, 0, "", 0, 0);
+            userInfo = new UserInfo(null, 0, 0, null, 0, 1.375, LocalDate.now().toString() , 0, 0, 0, 0, -100);
             fitnessAppDB.addUserInfo(userInfo);
         } else {
             userInfo = fitnessAppDB.getCurrentUserInfo();
@@ -105,8 +105,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 fitnessPlan = findViewById(checkedId);
                 userInfo.setFitnessPlan(fitnessPlan.getText().toString());
                 fitnessAppDB.updateUserInfo(userInfo);
-                swapFitnessPlanWidgets();
                 updateBMR();
+                swapFitnessPlanWidgets();
             }
         });
 
@@ -153,6 +153,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 swapHeightWidgets();
             }
         });
+
+        // Set recommendation data
+        setUserRecommendationStats();
 
         // Buttons to change activities
         weight.setOnClickListener(v -> openWeightActivity());
@@ -241,24 +244,18 @@ public class UserProfileActivity extends AppCompatActivity {
     // Methods for user recommendations
 
     // Get activity level and weight change trend
-    public void calculateActivityLevelAndWeightTrend() {
-
-        // Activity level
-
-        String lastEvaluation = userInfo.getLastEvaluationDate();
-
-        // If a recommendation has never been given, set an initial evaluation date
-        if(lastEvaluation.equals("")) {
-            userInfo.setLastEvaluationDate(LocalDate.now().toString());
-            return;
-        }
+    public void setUserRecommendationStats() {
 
         // Returns if the current date is not at least 7 days from the last evaluation
+        String lastEvaluation = userInfo.getLastEvaluationDate();
         if(LocalDate.parse(lastEvaluation).until(LocalDate.now(), DAYS) < 7) {
             return;
+        } else {
+            userInfo.setLastEvaluationDate(LocalDate.now().toString());
         }
 
         int timeExercisedLastWeek = fitnessAppDB.getLastWeekExerciseTime();
+        userInfo.setLastWeekExerciseTime(timeExercisedLastWeek);
 
         if(timeExercisedLastWeek == 0) {
             userInfo.setActivityLevel(1.2);
@@ -272,13 +269,15 @@ public class UserProfileActivity extends AppCompatActivity {
             userInfo.setActivityLevel(1.9);
         }
 
-
         // weight change trend
 
         double weightChange = fitnessAppDB.getWeeklyWeightAverageDifference();
+        userInfo.setWeightChange(weightChange);
+
         String currentPlan = userInfo.getFitnessPlan();
         double bmrAdjustment = userInfo.getBmrAdjustment();
         double calorieDifferenceFromGoal = fitnessAppDB.getLastWeekAverageCalories() - userInfo.getBMR();
+        userInfo.setCalorieDifferenceFromGoal(calorieDifferenceFromGoal);
 
         // Adjusts BMR based on weight change trend
 
@@ -360,7 +359,7 @@ public class UserProfileActivity extends AppCompatActivity {
         double activityLevel = userInfo.getActivityLevel();
 
         // Return if any of the required fields are empty
-        if(gender.equals("") || age <= 1 || height <= 1 || weight <= 1 || userGoal.equals("")) {
+        if(gender == null || age <= 1 || height <= 1 || weight <= 1 || userGoal == null) {
             return;
         }
 
@@ -380,11 +379,5 @@ public class UserProfileActivity extends AppCompatActivity {
         bmr *= activityLevel;
 
         userInfo.setBMR(bmr);
-    }
-
-    // Update user recommendations if they haven't been updated within 7 days
-    public void updateUserRecommendations() {
-
-
     }
 }
