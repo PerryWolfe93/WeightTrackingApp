@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zybooks.perrywolfe_weighttrackingapp">
+    package="com.fitness_app">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/launcher_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PerryWolfeWeightTrackingApp">
-        <activity android:name=".FoodActivity" />
-        <activity android:name=".DietActivity" />
-        <activity android:name=".ExerciseActivity" />
-        <activity android:name=".UserProfileActivity" />
-        <activity android:name=".NewUserActivity" />
-        <activity android:name=".WeightActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.fitness_app.activities.FoodActivity" />
+        <activity android:name="com.fitness_app.activities.DietActivity" />
+        <activity android:name="com.fitness_app.activities.ExerciseActivity" />
+        <activity android:name="com.fitness_app.activities.UserProfileActivity" />
+        <activity android:name="com.fitness_app.activities.NewUserActivity" />
+        <activity android:name="com.fitness_app.activities.WeightActivity" />
+        <activity android:name="com.fitness_app.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

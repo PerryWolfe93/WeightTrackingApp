@@ -1,13 +1,34 @@
 <resources>
-    <string name="app_name">Weight Loss Helper</string>
-    <string name="LoginButton">Log in</string>
-    <string name="LoginTitle">Weight Tracker</string>
+
+    // All String Resources
+    <string name="app_name">Fitness Tracker</string>
+    // Login Activity Strings
+    <string name="LoginTitle">Fitness Tracker</string>
     <string name="LoginUsername">Username</string>
     <string name="LoginPassword">Password</string>
+    <string name="LoginButton">Log in</string>
     <string name="ButtonForgotUsername">Forgot Username</string>
     <string name="ButtonForgotPassword">Forgot Password</string>
     <string name="ButtonNewUser">Create New User</string>
+    <string name="CloudPNG">Cloud PNG</string>
+    <string name="SunPNG">Sun PNG</string>
+    // New User Strings
+    <string name="tv_newUser_title">Create New User</string>
+    <string name="et_newUser_username">Username</string>
+    <string name="et_newUser_password">Password</string>
+    <string name="et_newUser_passwordMatch">Re-enter Password</string>
+    <string name="et_newUser_email">Email Address</string>
+    <string name="et_newUser_phoneNumber">Phone Number</string>
+    <string name="btn_newUser_create">Create</string>
+    //
+
+
+
     <string name="title_activity_food_recycler">FoodRecyclerActivity</string>
+
+
+
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
