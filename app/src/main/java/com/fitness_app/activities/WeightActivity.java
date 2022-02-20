@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.recycler_adapters.WeightRecyclerAdapter;
 import com.fitness_app.object_classes.UserInfo;
@@ -25,9 +26,10 @@ public class WeightActivity extends AppCompatActivity {
     // Variable declarations
     private EditText currentWeight;
     private RecyclerView recyclerView;
-    private DatabaseHelper fitnessAppDB;
     private UserInfo userInfo;
     private TextView userRecommendation;
+    DatabaseHelper fitnessAppDB;
+    BackgroundAnimator backgroundAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,10 @@ public class WeightActivity extends AppCompatActivity {
 
         // Initialize instance of DatabaseHelper
         fitnessAppDB = new DatabaseHelper(WeightActivity.this);
+
+        // Call class method for background animation
+        backgroundAnimator = new BackgroundAnimator();
+        backgroundAnimator.animateBackground(findViewById(R.id.weight_layout));
 
         // Assign values to widget variables
         recyclerView = findViewById(R.id.rv_weight_list);

@@ -1,6 +1,8 @@
 <resources>
 
     // All String Resources
+
+    // Application Name
     <string name="app_name">Fitness Tracker</string>
     // Login Activity Strings
     <string name="LoginTitle">Fitness Tracker</string>
@@ -12,7 +14,7 @@
     <string name="ButtonNewUser">Create New User</string>
     <string name="CloudPNG">Cloud PNG</string>
     <string name="SunPNG">Sun PNG</string>
-    // New User Strings
+    // New User Activity Strings
     <string name="tv_newUser_title">Create New User</string>
     <string name="et_newUser_username">Username</string>
     <string name="et_newUser_password">Password</string>
@@ -20,14 +22,99 @@
     <string name="et_newUser_email">Email Address</string>
     <string name="et_newUser_phoneNumber">Phone Number</string>
     <string name="btn_newUser_create">Create</string>
-    //
+    // User Profile Activity Strings
+    <string name="tv_userProfile_title">User Name</string>
+    <string name="tv_userProfile_gender">Gender:</string>
+    <string name="btn_userProfile_weight">Weight</string>
+    <string name="btn_userProfile_exercise">Exercise</string>
+    <string name="btn_userProfile_diet">Diet</string>
+    <string name="rb_userProfile_male">Male</string>
+    <string name="rb_userProfile_female">Female</string>
+    <string name="tv_userProfile_age">Age: </string>
+    <string name="tv_userProfile_height">Height: </string>
+    <string name="rb_userProfile_gainMuscle">Gain Muscle</string>
+    <string name="rb_userProfile_loseWeight">Lose Weight</string>
+    <string name="rb_userProfile_maintain">Maintain</string>
+    <string name="tv_userProfile_exerciseType">Fitness Plan:</string>
+    <string name="btn_userProfile_edit">Edit</string>
+    <string name="tv_userProfile_genderData">""</string>
+    <string name="tv_userProfile_ageData">""</string>
+    <string name="tv_userProfile_heightData">""</string>
+    <string name="tv_userProfile_fitnessPlanData">""</string>
+    // Weight Activity Strings
+    <string name="tv_weight_title">Weights</string>
+    <string name="et_weight_editCurrentWeight">Current Weight</string>
+    <string name="btn_weight_changeWeight">Enter</string>
+    <string name="btn_weight_back">Back</string>
+    <string name="tv_weight_date_title">Date</string>
+    <string name="tv_weight_weight_title">Weight</string>
+    <string name="tv_weight_recommendation">Recommendation</string>
+    // Weight List Recycler Adapter Strings
+    <string name="tv_weightList_date">Date</string>
+    <string name="tv_weightList_weight">Weight</string>
+    // Exercise Activity Strings
+    <string name="tv_exercise_title">Exercise</string>
+    <string name="tv_exercise_date_title">Date</string>
+    <string name="tv_exercise_exercise_title">Exercise</string>
+    <string name="tv_exercise_time_title">Time(minutes)</string>
+    <string name="tv_exercise_exercise_type">Exercise Type:</string>
+    <string name="rb_exercise_cardio">Cardio</string>
+    <string name="rb_exercise_strength">Strength</string>
+    <string name="et_exercise_time">Time(minutes)</string>
+    <string name="btn_exercise_back">Back</string>
+    <string name="btn_exercise_enter">Enter</string>
+    <string name="tv_exercise_recommendation">Recommendation</string>
+    <string-array name="spn_exercises">
+        <item></item>
+        <item>Running</item>
+        <item>Cycling</item>
+        <item>Swimming</item>
+        <item>Weight Lifting</item>
+        <item>Walking</item>
+    </string-array>
+    // Exercise List Recycler Adapter Strings
+    <string name="tv_exerciseList_date">Date</string>
+    <string name="tv_exerciseList_exerciseType">Exercise</string>
+    <string name="tv_exerciseList_exerciseTime">Time Exercised</string>
+    // Diet Activity Strings
+    <string name="tv_diet_title">Diet</string>
+    <string name="et_diet_calories">Calories</string>
+    <string name="btn_diet_add">Add</string>
+    <string name="btn_diet_remove">Remove</string>
+    <string name="btn_diet_back">Back</string>
+    <string name="tv_diet_date_title">Date</string>
+    <string name="tv_diet_calories_title">Calories</string>
+    <string name="et_diet_protein">Protein</string>
+    <string name="tv_diet_proteinColumn">Protein</string>
+    <string name="tv_diet_carbColumn">Carb</string>
+    <string name="tv_diet_fatColumn">Fat</string>
+    <string name="et_diet_carb">Carb</string>
+    <string name="et_diet_fat">Fat</string>
+    <string name="tv_diet_userRecommendation">Recommendation</string>
+    <string name="et_diet_food">Food</string>
+    // Diet List Recycler Adapter Strings
+    <string name="tv_dietList_date">Date</string>
+    <string name="tv_dietList_calories">Calories</string>
+    <string name="tv_dietList_protein">Protein</string>
+    <string name="tv_dietList_carb">Carb</string>
+    <string name="tv_dietList_fat">Fat</string>
+    // Food Activity Strings
+    <string name="tv_food_title">Title</string>
+    <string name="tv_food_name">Food</string>
+    <string name="tv_food_calories">Calories</string>
+    <string name="tv_food_protein">Protein</string>
+    <string name="tv_food_carbs">Carbs</string>
+    <string name="tv_food_fat">Fat</string>
+    // Food List Recycler Adapter Strings
+    <string name="tv_foodList_name">Food</string>
+    <string name="tv_foodList_calories">Calories</string>
+    <string name="tv_foodList_protein">Protein</string>
+    <string name="tv_foodList_carb">Carbs</string>
+    <string name="tv_foodList_fat">Fat</string>
 
 
 
     <string name="title_activity_food_recycler">FoodRecyclerActivity</string>
-
-
-
 
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

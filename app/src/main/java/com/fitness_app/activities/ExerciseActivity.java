@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.recycler_adapters.ExerciseRecyclerAdapter;
 import com.fitness_app.object_classes.UserInfo;
@@ -34,6 +36,7 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
     private DatabaseHelper fitnessAppDB;
     private String exerciseChoice;
     private UserInfo userInfo;
+    BackgroundAnimator backgroundAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,10 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
 
         // Initialize instance of DatabaseHelper
         fitnessAppDB = new DatabaseHelper(ExerciseActivity.this);
+
+        // Call class method for background animation
+        backgroundAnimator = new BackgroundAnimator();
+        backgroundAnimator.animateBackground(findViewById(R.id.exercise_layout));
 
         userInfo = fitnessAppDB.getCurrentUserInfo();
 
@@ -55,6 +62,8 @@ public class ExerciseActivity extends AppCompatActivity implements AdapterView.O
 
         // Spinner Variables
         ArrayAdapter<CharSequence> exerciseChoiceAdapter = ArrayAdapter.createFromResource(this, R.array.spn_exercises, android.R.layout.simple_spinner_item);
+        //TODO use this method to fix spinner dropdown background
+        // exerciseChoiceAdapter.setDropDownViewTheme();
         exerciseChoiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chooseExercise.setAdapter(exerciseChoiceAdapter);
 

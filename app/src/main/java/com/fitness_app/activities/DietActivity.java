@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.object_classes.Food;
 import com.fitness_app.object_classes.UserInfo;
@@ -27,6 +28,7 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
     private EditText enterFood, enterCalories, enterProtein, enterCarb, enterFat;
     private TextView userRecommendation;
     private UserInfo userInfo;
+    BackgroundAnimator backgroundAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,10 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
 
         // Initialize instance of DatabaseHelper
         fitnessAppDB = new DatabaseHelper(DietActivity.this);
+
+        // Call class method for background animation
+        backgroundAnimator = new BackgroundAnimator();
+        backgroundAnimator.animateBackground(findViewById(R.id.exercise_layout));
 
         // Initialize widget variables
         recyclerView = findViewById(R.id.rv_diet_list);
@@ -58,7 +64,11 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
 
         // Button for adding to calories/protein/carb/fat
         add.setOnClickListener(v -> {
-            if(enterFood.equals("") || enterCalories.equals("")) {
+
+            String foodEntered = enterFood.getText().toString();
+            String caloriesEntered = enterCalories.getText().toString();
+
+            if(foodEntered.equals("") || caloriesEntered.equals("")) {
                 Toast.makeText(this, "Please fill in the food and calorie fields to log food.", Toast.LENGTH_SHORT).show();
             } else {
                 String foodName = enterFood.getText().toString();

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="tv_foodList_name">Food</string>
-    <string name="tv_foodList_calories">Calories</string>
-    <string name="tv_foodList_protein">Protein</string>
-    <string name="tv_foodList_carb">Carbs</string>
-    <string name="tv_foodList_fat">Fat</string>
-</resources>

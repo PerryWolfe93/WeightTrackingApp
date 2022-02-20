@@ -1,5 +1,7 @@
 package com.fitness_app.activities;
 
+//TODO Fix seek bars to show value while scrolling
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.object_classes.User;
 import com.fitness_app.object_classes.UserInfo;
@@ -23,21 +26,23 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    // Variable declarations for widgets
-    private TextView age;
-    private TextView height;
-    private TextView genderData;
-    private TextView ageData;
-    private TextView heightData;
-    private TextView fitnessPlanData;
-    private TextView fitnessPlanPrompt;
-    private SeekBar ageBar, heightBar;
-    private RadioGroup genderSelect, fitnessPlanSelect;
-    private RadioButton gender, fitnessPlan;
     // Variable declaration for database
-    DatabaseHelper fitnessAppDB;
+    private DatabaseHelper fitnessAppDB;
+
     // Variable declaration for User
     private UserInfo userInfo;
+
+    // Variable declarations for widgets
+    private RadioGroup genderSelect;
+    private RadioButton genderOptions;
+    private TextView genderData;
+    private SeekBar ageBar;
+    private TextView ageData;
+    private SeekBar heightBar;
+    private TextView heightData;
+    private RadioGroup fitnessPlanSelect;
+    private RadioButton fitnessPlan;
+    private TextView fitnessPlanData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,27 +52,27 @@ public class UserProfileActivity extends AppCompatActivity {
         // Initialize instances of User Info and DatabaseHelper
         fitnessAppDB = new DatabaseHelper(UserProfileActivity.this);
 
-        // Assign values to widget variables
-        age = findViewById(R.id.tv_userProfile_age);
-        height = findViewById(R.id.tv_userProfile_height);
+        // Call class method for background animation
+        // Variable declaration for background animator
+        BackgroundAnimator backgroundAnimator = new BackgroundAnimator();
+        backgroundAnimator.animateBackground(findViewById(R.id.user_profile_layout));
+
+        // Set page title to username
         TextView username = findViewById(R.id.tv_userProfile_title);
+        username.setText(User.currentUser);
+        // Assign values to widget variables
+        genderSelect = findViewById(R.id.rg_userProfile_gender);
+        genderData = findViewById(R.id.tv_userProfile_genderData);
+        ageBar = findViewById(R.id.sb_userProfile_age);
+        ageData = findViewById(R.id.tv_userProfile_ageData);
+        heightBar = findViewById(R.id.sb_userProfile_height);
+        heightData = findViewById(R.id.tv_userProfile_heightData);
+        fitnessPlanSelect = findViewById(R.id.rg_userProfile_fitnessPlan);
+        fitnessPlanData = findViewById(R.id.tv_userProfile_fitnessPlanData);
         Button weight = findViewById(R.id.btn_userProfile_weight);
         Button exercise = findViewById(R.id.btn_userProfile_exercise);
         Button diet = findViewById(R.id.btn_userProfile_diet);
-        genderSelect = findViewById(R.id.rg_userProfile_gender);
-        fitnessPlanSelect = findViewById(R.id.rg_userProfile_fitnessPlan);
-        ageBar = findViewById(R.id.sb_userProfile_age);
-        heightBar = findViewById(R.id.sb_userProfile_height);
         Button edit = findViewById(R.id.btn_userProfile_edit);
-        genderData = findViewById(R.id.tv_userProfile_gender);
-        ageData = findViewById(R.id.tv_userProfile_ageData);
-        heightData = findViewById(R.id.tv_userProfile_heightData);
-        fitnessPlanData = findViewById(R.id.tv_userProfile_fitnessPlanData);
-        fitnessPlanPrompt = findViewById(R.id.tv_userProfile_exerciseType);
-
-        // Set page title
-        username.setText(User.currentUser);
-
 
         // If user info is not in database, add to database, else retrieve current user information
         if(!fitnessAppDB.checkUserInfo(fitnessAppDB.getUserID(User.currentUser))) {
@@ -92,13 +97,14 @@ public class UserProfileActivity extends AppCompatActivity {
             swapFitnessPlanWidgets();
         }
 
-        // Set click listeners for buttons
+        // Set click listeners for edit button (reverts user profile to initial state)
         edit.setOnClickListener(v -> swapAllWidgets());
+
         // Gender radio group click listener that changes widgets when button selected
         genderSelect.setOnCheckedChangeListener((group, checkedId) -> {
             if(checkedId > -1) {
-                gender = findViewById(checkedId);
-                userInfo.setGender(gender.getText().toString());
+                genderOptions = findViewById(checkedId);
+                userInfo.setGender(genderOptions.getText().toString());
                 fitnessAppDB.updateUserInfo(userInfo);
                 updateBMR();
                 swapGenderWidgets();
@@ -122,7 +128,7 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int value = min + progress;
-                age.setText("Age: " + value);
+                ageData.setText(Integer.toString(value));
                 userInfo.setAge(value);
                 fitnessAppDB.updateUserInfo(userInfo);
                 updateBMR();
@@ -145,7 +151,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 int value = min + progress;
                 int ft = value / 12;
                 int in = value % 12;
-                height.setText("Height: " + ft + " ft " + in + " in.");
+                heightData.setText(ft + " ft " + in + " in.");
                 userInfo.setHeight(value);
                 fitnessAppDB.updateUserInfo(userInfo);
                 updateBMR();
@@ -173,57 +179,49 @@ public class UserProfileActivity extends AppCompatActivity {
     // Swap gender widgets
     @SuppressLint("SetTextI18n")
     public void swapGenderWidgets() {
-        genderSelect.setVisibility(View.GONE);
+        genderSelect.setVisibility(View.INVISIBLE);
         genderData.setVisibility(View.VISIBLE);
-        genderData.setText("Gender: " + fitnessAppDB.getStringData("GENDER", "USER_DATA_TABLE"));
+        genderData.setText(fitnessAppDB.getStringData("GENDER", "USER_DATA_TABLE"));
     }
     // Swap age widgets
     @SuppressLint("SetTextI18n")
     public void swapAgeWidgets() {
-        ageBar.setVisibility(View.GONE);
-        age.setVisibility(View.GONE);
+        ageBar.setVisibility(View.INVISIBLE);
         ageData.setVisibility(View.VISIBLE);
-        ageData.setText("Age: " + fitnessAppDB.getIntData("AGE", "USER_DATA_TABLE"));
+        ageData.setText(Integer.toString(fitnessAppDB.getIntData("AGE", "USER_DATA_TABLE")));
     }
     // Swap height widgets
     @SuppressLint("SetTextI18n")
     public void swapHeightWidgets() {
-        heightBar.setVisibility(View.GONE);
-        height.setVisibility(View.GONE);
+        heightBar.setVisibility(View.INVISIBLE);
         heightData.setVisibility(View.VISIBLE);
         int dbHeight = fitnessAppDB.getIntData("HEIGHT", "USER_DATA_TABLE");
         int ft = dbHeight / 12;
         int in = dbHeight % 12;
-        heightData.setText("Height: " + ft + " ft " + in + " in.");
+        heightData.setText(ft + " ft " + in + " in.");
     }
     // Swap fitness plan widgets
     @SuppressLint("SetTextI18n")
     public void swapFitnessPlanWidgets() {
-        fitnessPlanSelect.setVisibility(View.GONE);
-        fitnessPlanPrompt.setVisibility(View.GONE);
+        fitnessPlanSelect.setVisibility(View.INVISIBLE);
         fitnessPlanData.setVisibility(View.VISIBLE);
-        fitnessPlanData.setText("Fitness Plan: " + fitnessAppDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
+        fitnessPlanData.setText(fitnessAppDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
     }
     // Swaps all widgets when edit button clicked
     @SuppressLint("SetTextI18n")
     public void swapAllWidgets() {
         genderSelect.clearCheck();
-        fitnessPlanSelect.clearCheck();
-        genderData.setVisibility(View.GONE);
         genderSelect.setVisibility(View.VISIBLE);
+        genderData.setVisibility(View.INVISIBLE);
         ageBar.setVisibility(View.VISIBLE);
-        age.setVisibility(View.VISIBLE);
-        ageData.setVisibility(View.GONE);
-        heightBar.setVisibility(View.VISIBLE);
-        heightData.setVisibility(View.GONE);
-        height.setVisibility(View.VISIBLE);
-        fitnessPlanSelect.setVisibility(View.VISIBLE);
-        fitnessPlanPrompt.setVisibility(View.VISIBLE);
-        fitnessPlanData.setVisibility(View.GONE);
-        heightBar.setProgress(0);
-        height.setText("Height: ");
         ageBar.setProgress(0);
-        age.setText("Age: ");
+        ageData.setVisibility(View.INVISIBLE);
+        heightBar.setVisibility(View.VISIBLE);
+        heightBar.setProgress(0);
+        heightData.setVisibility(View.INVISIBLE);
+        fitnessPlanSelect.clearCheck();
+        fitnessPlanSelect.setVisibility(View.VISIBLE);
+        fitnessPlanData.setVisibility(View.INVISIBLE);
     }
 
 
