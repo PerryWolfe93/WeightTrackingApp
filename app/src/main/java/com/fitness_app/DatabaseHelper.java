@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
@@ -16,23 +16,17 @@ import com.fitness_app.object_classes.Diet;
 import com.fitness_app.object_classes.Exercise;
 import com.fitness_app.object_classes.Food;
 import com.fitness_app.object_classes.User;
-import com.fitness_app.object_classes.UserInfo;
 import com.fitness_app.object_classes.Weight;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    // Database Constants
-
-    // Login Table Constants
-    public static final String LOGIN_TABLE = "LOGIN_TABLE";
-    public static final String USER_ID = "ID";
+    // User Data Table Constants
+    public static final String USER_DATA_TABLE = "USER_DATA_TABLE";
+    public static final String COLUMN_USER_ID = "ID";
     public static final String COLUMN_USERNAME = "USERNAME";
     public static final String COLUMN_PASSWORD = "PASSWORD";
     public static final String COLUMN_PHONE_NUMBER = "PHONE_NUMBER";
     public static final String COLUMN_EMAIL = "EMAIL";
-
-    // User Data Table Constants
-    public static final String USER_DATA_TABLE = "USER_DATA_TABLE";
     public static final String COLUMN_GENDER = "GENDER";
     public static final String COLUMN_AGE = "AGE";
     public static final String COLUMN_HEIGHT = "HEIGHT";
@@ -48,13 +42,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Weight Data Table Constants
     public static final String WEIGHT_DATA_TABLE = "WEIGHT_DATA_TABLE";
+    public static final String COLUMN_WEIGHT_ID = "WEIGHT_ID";
     public static final String COLUMN_WEIGHT = "WEIGHT";
 
     // Diet Data Table Constants
     public static final String DIET_DATA_TABLE = "DIET_DATA_TABLE";
+    public static final String COLUMN_DIET_ID = "DIET_ID";
 
     // Food Data Table Constants
     public static final String FOOD_DATA_TABLE = "FOOD_DATA_TABLE";
+    public static final String COLUMN_FOOD_ID = "FOOD_ID";
     public static final String COLUMN_FOOD = "FOOD";
     public static final String COLUMN_CALORIES = "CALORIES";
     public static final String COLUMN_PROTEIN = "PROTEIN";
@@ -63,131 +60,96 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Exercise Data Table Constants
     public static final String EXERCISE_DATA_TABLE = "EXERCISE_DATA_TABLE";
+    public static final String COLUMN_EXERCISE_ID = "EXERCISE_ID";
     public static final String COLUMN_EXERCISE_TIME = "EXERCISE_TIME";
     public static final String COLUMN_EXERCISE_TYPE = "EXERCISE_TYPE";
 
-    // The Date Is Shared Between Three Tables
+    // The Date String Constant is shared between three tables
     public static final String COLUMN_DATE = "DATE";
 
     // Default constructor for database helper
     public DatabaseHelper(@Nullable Context context) {
-        super(context, "Fitness Application Database", null, 1);
+        super(context, "Fitness App Database", null, 3);
     }
 
     // Called the first time the database is accessed. Generates all database tables
     @Override
     public void onCreate(SQLiteDatabase fitnessAppDB) {
-
-        String loginTable = "CREATE TABLE " + LOGIN_TABLE + " (" +
-                USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                COLUMN_USERNAME + " TEXT, " +
-                COLUMN_PASSWORD + " TEXT, " +
-                COLUMN_PHONE_NUMBER + " TEXT, " +
-                COLUMN_EMAIL + " TEXT)";
-        fitnessAppDB.execSQL(loginTable);
+        Log.e("FitnessApp", "onCreate invoked");
 
         String userDataTable = "CREATE TABLE " + USER_DATA_TABLE + " (" +
-                USER_ID + " INTEGER, " +
-                COLUMN_GENDER + " TEXT, " +
-                COLUMN_AGE + " INTEGER, " +
-                COLUMN_HEIGHT + " DOUBLE, " +
-                COLUMN_FITNESS_PLAN + " TEXT, " +
-                COLUMN_BMR + " DOUBLE, " +
-                COLUMN_ACTIVITY_LEVEL + " DOUBLE, " +
-                COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE + " TEXT, " +
-                COLUMN_CURRENT_WEIGHT + " DOUBLE, " +
-                COLUMN_BMR_ADJUSTMENT + " DOUBLE, " +
-                COLUMN_LAST_WEEK_EXERCISE_TIME + " INTEGER, " +
-                COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK + " DOUBLE, " +
-                COLUMN_WEIGHT_CHANGE + " DOUBLE)";
+                COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_USERNAME + " TEXT NOT NULL," +
+                COLUMN_PASSWORD + " TEXT NOT NULL," +
+                COLUMN_PHONE_NUMBER + " TEXT NOT NULL, " +
+                COLUMN_EMAIL + " TEXT NOT NULL," +
+                COLUMN_GENDER + " TEXT," +
+                COLUMN_AGE + " INTEGER," +
+                COLUMN_HEIGHT + " INTEGER," +
+                COLUMN_FITNESS_PLAN + " TEXT," +
+                COLUMN_BMR + " REAL," +
+                COLUMN_ACTIVITY_LEVEL + " REAL," +
+                COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE + " TEXT," +
+                COLUMN_CURRENT_WEIGHT + " REAL," +
+                COLUMN_BMR_ADJUSTMENT + " REAL," +
+                COLUMN_LAST_WEEK_EXERCISE_TIME + " INTEGER," +
+                COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK + " INTEGER," +
+                COLUMN_WEIGHT_CHANGE + " REAL)";
         fitnessAppDB.execSQL(userDataTable);
 
         String weightDataTable = "CREATE TABLE " + WEIGHT_DATA_TABLE + " (" +
-                USER_ID + " INTEGER, " +
-                COLUMN_WEIGHT + " DOUBLE, " +
-                COLUMN_DATE + " TEXT)";
+                COLUMN_WEIGHT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                COLUMN_USER_ID + " INTEGER NOT NULL, " +
+                COLUMN_WEIGHT + " REAL NOT NULL, " +
+                COLUMN_DATE + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + COLUMN_USER_ID + ") " +
+                "REFERENCES " + USER_DATA_TABLE + " (" + COLUMN_USER_ID + "))";
         fitnessAppDB.execSQL(weightDataTable);
 
         String dietDataTable = "CREATE TABLE " + DIET_DATA_TABLE + " (" +
-                USER_ID + " INTEGER, " +
-                COLUMN_DATE + " TEXT)";
+                COLUMN_DIET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                COLUMN_USER_ID + " INTEGER NOT NULL, " +
+                COLUMN_DATE + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + COLUMN_USER_ID + ") " +
+                "REFERENCES " + USER_DATA_TABLE + " (" + COLUMN_USER_ID + "))";
         fitnessAppDB.execSQL(dietDataTable);
 
         String foodDataTable = "CREATE TABLE " + FOOD_DATA_TABLE + " (" +
-                USER_ID + " INTEGER, " +
-                COLUMN_DATE + " TEXT, " +
-                COLUMN_FOOD + " TEXT, " +
-                COLUMN_CALORIES + " INTEGER, " +
+                COLUMN_FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                COLUMN_WEIGHT_ID + " INTEGER NOT NULL, " +
+                COLUMN_DATE + " TEXT NOT NULL, " +
+                COLUMN_FOOD + " TEXT NOT NULL, " +
+                COLUMN_CALORIES + " INTEGER NOT NULL, " +
                 COLUMN_PROTEIN + " INTEGER, " +
                 COLUMN_CARB + " INTEGER, " +
-                COLUMN_FAT + " INTEGER)";
+                COLUMN_FAT + " INTEGER, " +
+                "FOREIGN KEY (" + COLUMN_WEIGHT_ID + ") " +
+                "REFERENCES " + DIET_DATA_TABLE + " (" + COLUMN_WEIGHT_ID + "))";
         fitnessAppDB.execSQL(foodDataTable);
 
         String exerciseDataTable = "CREATE TABLE " + EXERCISE_DATA_TABLE + " (" +
-                USER_ID + " INTEGER, " +
-                COLUMN_EXERCISE_TIME + " INTEGER, " +
-                COLUMN_EXERCISE_TYPE + " TEXT, " +
-                COLUMN_DATE + " TEXT)";
+                COLUMN_EXERCISE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                COLUMN_USER_ID + " INTEGER NOT NULL, " +
+                COLUMN_EXERCISE_TIME + " INTEGER NOT NULL, " +
+                COLUMN_EXERCISE_TYPE + " TEXT NOT NULL, " +
+                COLUMN_DATE + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + COLUMN_USER_ID + ") " +
+                "REFERENCES " + USER_DATA_TABLE + " (" + COLUMN_USER_ID + "))";
         fitnessAppDB.execSQL(exerciseDataTable);
     }
 
     // Called whenever a new version of the application is available
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        Log.e("FitnessApp", "onUpgrade invoked");
     }
-
 
     // Database methods
 
-    // Database methods for getting a single data entry
-    public String getStringData(String column, String table) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-        cursor.moveToFirst();
-        String data = cursor.getString(0);
-        cursor.close();
-        return data;
-    }
-    public int getIntData(String column, String table) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + column + " from " + table + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-        cursor.moveToFirst();
-        int data = cursor.getInt(0);
-        cursor.close();
-        return data;
-    }
-
-    // Database methods for new users/login
-    public boolean addOneUser(User user) {
-        SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-
-        cv.put(COLUMN_USERNAME, user.getUsername());
-        cv.put(COLUMN_PASSWORD, user.getPassword());
-        cv.put(COLUMN_EMAIL, user.getEmail());
-        cv.put(COLUMN_PHONE_NUMBER, user.getPhoneNumber());
-
-        long insert = weightTrackerDB.insert(LOGIN_TABLE, null, cv);
-        return insert != -1;
-    }
-    public boolean checkUsername(String username) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + LOGIN_TABLE + " where " + COLUMN_USERNAME + " = ?", new String[] {username});
-        boolean result = cursor.getCount()>0;
-        cursor.close();
-        return result;
-    }
-    public boolean checkPassword(String username, String password) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + LOGIN_TABLE + " where " + COLUMN_USERNAME + " = ? and " + COLUMN_PASSWORD + " = ?", new String[] {username, password});
-        boolean result = cursor.getCount()>0;
-        cursor.close();
-        return result;
-    }
+    // Method for getting current user
     public int getUserID(String username) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + USER_ID + " from " + LOGIN_TABLE + " where " + COLUMN_USERNAME + " = ?", new String[] {username});
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_USER_ID + " from " + USER_DATA_TABLE + " where " + COLUMN_USERNAME + " = ?", new String[] {username});
         if(cursor.moveToFirst()) {
             int result = cursor.getInt(0);
             cursor.close();
@@ -198,74 +160,170 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Database methods for existing user info
-    public boolean checkUserInfo(int id) {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + USER_ID + " from " + USER_DATA_TABLE + " where " + USER_ID + " = ?", new String[] {String.valueOf(id)});
+
+    // Database methods for new users/login
+
+    // Adds new user to SQLite database
+    public boolean addOneUser(User user) {
+        SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_USERNAME, user.getUsername());
+        cv.put(COLUMN_PASSWORD, user.getPassword());
+        cv.put(COLUMN_PHONE_NUMBER, user.getPhoneNumber());
+        cv.put(COLUMN_EMAIL, user.getEmail());
+        cv.put(COLUMN_GENDER, user.getGender());
+        cv.put(COLUMN_AGE, user.getAge());
+        cv.put(COLUMN_HEIGHT, user.getHeight());
+        cv.put(COLUMN_FITNESS_PLAN, user.getFitnessPlan());
+        cv.put(COLUMN_BMR, user.getBMR());
+        cv.put(COLUMN_ACTIVITY_LEVEL, user.getActivityLevel());
+        cv.put(COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE, user.getLastEvaluationDate());
+        cv.put(COLUMN_CURRENT_WEIGHT, user.getCurrentWeight());
+        cv.put(COLUMN_BMR_ADJUSTMENT, user.getBmrAdjustment());
+        cv.put(COLUMN_LAST_WEEK_EXERCISE_TIME, user.getLastWeekExerciseTime());
+        cv.put(COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK, user.getCalorieDifferenceFromGoal());
+        cv.put(COLUMN_WEIGHT_CHANGE, user.getWeightChange());
+
+        long insert = fitnessAppDB.insert(USER_DATA_TABLE, null, cv);
+        return insert != -1;
+    }
+    // Checks that user exists in database
+    public boolean checkUsername(String username) {
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + USER_DATA_TABLE +
+                " where " + COLUMN_USERNAME + " = ?", new String[] {username});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
     }
-    // Inserts user info into the database
-    public boolean addUserInfo(UserInfo userInfo) {
-
-        SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-
-        cv.put(USER_ID, getUserID(User.currentUser));
-        cv.put(COLUMN_AGE, userInfo.getAge());
-        cv.put(COLUMN_GENDER, userInfo.getGender());
-        cv.put(COLUMN_HEIGHT, userInfo.getHeight());
-        cv.put(COLUMN_FITNESS_PLAN, userInfo.getFitnessPlan());
-        cv.put(COLUMN_BMR, userInfo.getBMR());
-        cv.put(COLUMN_ACTIVITY_LEVEL, userInfo.getActivityLevel());
-        cv.put(COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE, userInfo.getLastEvaluationDate());
-        cv.put(COLUMN_CURRENT_WEIGHT, userInfo.getCurrentWeight());
-        cv.put(COLUMN_BMR_ADJUSTMENT, userInfo.getBmrAdjustment());
-        cv.put(COLUMN_LAST_WEEK_EXERCISE_TIME, userInfo.getLastWeekExerciseTime());
-        cv.put(COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK, userInfo.getCalorieDifferenceFromGoal());
-        cv.put(COLUMN_WEIGHT_CHANGE, userInfo.getWeightChange());
-
-        long insert = weightTrackerDB.insert(USER_DATA_TABLE, null, cv);
-        return insert != -1;
+    // Checks that password entry matches username entry in database
+    public boolean checkPassword(String username, String password) {
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + USER_DATA_TABLE +
+                " where " + COLUMN_USERNAME + " = ? and " + COLUMN_PASSWORD + " = ?", new String[] {username, password});
+        boolean result = cursor.getCount()>0;
+        cursor.close();
+        return result;
     }
-    // Creates Diet object with current date's data
-    public UserInfo getCurrentUserInfo() {
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_AGE + ", " + COLUMN_GENDER + ", " + COLUMN_HEIGHT + ", " + COLUMN_FITNESS_PLAN + ", " + COLUMN_BMR + ", " + COLUMN_ACTIVITY_LEVEL + ", " + COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE + ", " + COLUMN_CURRENT_WEIGHT + ", " + COLUMN_BMR_ADJUSTMENT + ", " + COLUMN_LAST_WEEK_EXERCISE_TIME + ", " + COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK + ", " + COLUMN_WEIGHT_CHANGE + " from " + USER_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+
+
+    // Database methods for user profile activity
+    // Retrieves current user info from the database
+    public User getCurrentUserInfo() {
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + USER_DATA_TABLE + " where " + COLUMN_USER_ID + " = ?",  new String[] {String.valueOf(getUserID(User.currentUser))});
         cursor.moveToFirst();
-        return new UserInfo(cursor.getString(1), 0, 2, cursor.getString(3), cursor.getDouble(4), cursor.getDouble(5), cursor.getString(6), cursor.getDouble(7), cursor.getDouble(8), cursor.getInt(9), cursor.getDouble(10), cursor.getDouble(11));
-    }
-    public boolean updateUserInfo(UserInfo userInfo) {
+        String gender = cursor.getString(5);
+        int age = cursor.getInt(6);
+        int height = cursor.getInt(7);
+        String fitnessPlan = cursor.getString(8);
+        double bmr = cursor.getDouble(9);
+        double activityLevel = cursor.getDouble(10);
+        String lastEvaluationDate = cursor.getString(11);
+        double currentWeight = cursor.getDouble(12);
+        double bmrAdjustment = cursor.getDouble(13);
+        int lastWeekExercise = cursor.getInt(14);
+        int calorieDifference = cursor.getInt(15);
+        double weightChange = cursor.getDouble(16);
 
-        SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
+        return new User(gender, age, height, fitnessPlan, bmr, activityLevel, lastEvaluationDate,
+                currentWeight, bmrAdjustment, lastWeekExercise, calorieDifference, weightChange);
+    }
+    // Updates current user info in the database
+    public boolean updateUserInfo(User user) {
+
+        SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
-        cv.put(COLUMN_AGE, userInfo.getAge());
-        cv.put(COLUMN_GENDER, userInfo.getGender());
-        cv.put(COLUMN_HEIGHT, userInfo.getHeight());
-        cv.put(COLUMN_FITNESS_PLAN, userInfo.getFitnessPlan());
-        cv.put(COLUMN_BMR, userInfo.getBMR());
-        cv.put(COLUMN_ACTIVITY_LEVEL, userInfo.getActivityLevel());
-        cv.put(COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE, userInfo.getLastEvaluationDate());
-        cv.put(COLUMN_CURRENT_WEIGHT, userInfo.getCurrentWeight());
-        cv.put(COLUMN_BMR_ADJUSTMENT, userInfo.getCurrentWeight());
-        cv.put(COLUMN_LAST_WEEK_EXERCISE_TIME, userInfo.getLastWeekExerciseTime());
-        cv.put(COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK, userInfo.getCalorieDifferenceFromGoal());
-        cv.put(COLUMN_WEIGHT_CHANGE, userInfo.getWeightChange());
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_AGE, user.getAge());
+        cv.put(COLUMN_GENDER, user.getGender());
+        cv.put(COLUMN_HEIGHT, user.getHeight());
+        cv.put(COLUMN_FITNESS_PLAN, user.getFitnessPlan());
+        cv.put(COLUMN_BMR, user.getBMR());
+        cv.put(COLUMN_ACTIVITY_LEVEL, user.getActivityLevel());
+        cv.put(COLUMN_FITNESS_AND_WEIGHT_EVALUATION_DATE, user.getLastEvaluationDate());
+        cv.put(COLUMN_CURRENT_WEIGHT, user.getCurrentWeight());
+        cv.put(COLUMN_BMR_ADJUSTMENT, user.getCurrentWeight());
+        cv.put(COLUMN_LAST_WEEK_EXERCISE_TIME, user.getLastWeekExerciseTime());
+        cv.put(COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK, user.getCalorieDifferenceFromGoal());
+        cv.put(COLUMN_WEIGHT_CHANGE, user.getWeightChange());
 
-        long update = weightTrackerDB.update(USER_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser), null);
+        long update = fitnessAppDB.update(USER_DATA_TABLE, cv, COLUMN_USER_ID + " = " + getUserID(User.currentUser), null);
         return update != -1;
     }
+    // Retrieves at least 1 week of exercises
+    public ArrayList<Exercise> getLastWeekExercises() {
+        ArrayList<Exercise> lastWeekExercises = new ArrayList<>();
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        String[] columns = {COLUMN_EXERCISE_TYPE, COLUMN_EXERCISE_TIME, COLUMN_DATE};
+        Cursor cursor = fitnessAppDB.query(EXERCISE_DATA_TABLE, columns, COLUMN_USER_ID + " = " + getUserID(User.currentUser), null, null, null, COLUMN_EXERCISE_ID);
+        int i = 0;
+
+        if(cursor.moveToLast()) {
+            do {
+                Exercise exercise = new Exercise(cursor.getString(2), cursor.getString(1), cursor.getInt(0));
+                lastWeekExercises.add(exercise);
+                i++;
+            } while(cursor.moveToPrevious() && i <= 7);
+        } else {
+            cursor.close();
+            return null;
+        }
+        cursor.close();
+        return lastWeekExercises;
+    }
+    // Retrieves at least 2 weeks of weights
+    public ArrayList<Weight> getLastTwoWeeksWeights() {
+        ArrayList<Weight> lastTwoWeeksWeights = new ArrayList<>();
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        String[] columns = {COLUMN_WEIGHT, COLUMN_DATE};
+        Cursor cursor = fitnessAppDB.query(WEIGHT_DATA_TABLE, columns, COLUMN_USER_ID + " = " + getUserID(User.currentUser), null, null, null, COLUMN_WEIGHT_ID);
+        int i = 0;
+
+        if(cursor.moveToLast()) {
+            do {
+                Weight weight = new Weight(cursor.getDouble(0), cursor.getString(1));
+                lastTwoWeeksWeights.add(weight);
+                i++;
+            } while(cursor.moveToPrevious() && i <= 14);
+        } else {
+            cursor.close();
+            return null;
+        }
+        cursor.close();
+        return lastTwoWeeksWeights;
+    }
+    // Retrieves at least 1 week of diet data
+    public ArrayList<Diet> getLastWeekDiets() {
+        ArrayList<Diet> lastWeekDiets = new ArrayList<>();
+        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
+        String[] columns = {COLUMN_DATE};
+        Cursor cursor = fitnessAppDB.query(DIET_DATA_TABLE, columns, COLUMN_USER_ID + " = " + getUserID(User.currentUser), null, null, null, COLUMN_DIET_ID);
+        int i = 0;
+
+        if(cursor.moveToLast()) {
+            do {
+                Diet diet = new Diet(cursor.getString(2));
+                lastWeekDiets.add(diet);
+                i++;
+            } while(cursor.moveToPrevious() && i <= 7);
+        } else {
+            cursor.close();
+            return null;
+        }
+        cursor.close();
+        return lastWeekDiets;
+    }
 
 
-    // Database methods for weight data
+    // Database methods for weight activity
 
     // Checks database for weight table data from the current day
     public boolean checkForWeightData() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + WEIGHT_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + WEIGHT_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
@@ -276,7 +334,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_WEIGHT, weight.getWeight());
         cv.put(COLUMN_DATE, weight.getDate());
 
@@ -289,11 +347,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_WEIGHT, weight.getWeight());
         cv.put(COLUMN_DATE, weight.getDate());
 
-        long update = weightTrackerDB.update(WEIGHT_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+        long update = weightTrackerDB.update(WEIGHT_DATA_TABLE, cv, COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         return update != -1;
     }
     // Generates a list of weight data to use in the weight recyclerview
@@ -303,7 +361,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
 
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_WEIGHT + " from " + WEIGHT_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_WEIGHT + " from " + WEIGHT_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser), null);
 
         if(cursor.moveToFirst()) {
             do {
@@ -320,66 +378,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return weightList;
     }
-    /* Returns the difference in average weight between last week and the week before to determine
-     if weight is trending up, down, or staying the same */
-    public double getWeeklyWeightAverageDifference() {
-
-        SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_WEIGHT + " from " + WEIGHT_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-        double firstWeeklyRollingAverage = 0.0;
-        double secondWeeklyRollingAverage = 0.0;
-        int count = 0;
-
-        if(cursor.moveToLast()) {
-            do {
-
-                String date = cursor.getString(0);
-                double weight = cursor.getDouble(1);
-
-                for(int i = 1; i <= 7; i++) {
-                    if(date.equals(LocalDate.now().plus(-i, ChronoUnit.DAYS).toString())) {
-                        count++;
-                        firstWeeklyRollingAverage += weight;
-                    }
-                }
-
-            } while(cursor.moveToPrevious());
-        } else {
-            cursor.close();
-            return -100.0;
-        }
-        if(count == 0) {
-            return -100.0;
-        }
-        firstWeeklyRollingAverage /= count;
-
-        count = 0;
-        if(cursor.moveToLast()) {
-            do {
-
-                String date = cursor.getString(0);
-                float weight = cursor.getFloat(1);
-
-                for(int i = 8; i <= 14; i++) {
-                    if(date.equals(LocalDate.now().plus(-i, ChronoUnit.DAYS).toString())) {
-                        count++;
-                        secondWeeklyRollingAverage += weight;
-                    }
-                }
-
-            } while(cursor.moveToPrevious());
-        } else {
-            cursor.close();
-            return -100.0;
-        }
-        if(count == 0) {
-            return -100.0;
-        }
-        secondWeeklyRollingAverage /= count;
-
-        cursor.close();
-        return firstWeeklyRollingAverage - secondWeeklyRollingAverage;
-    }
 
 
     // Database methods for food and diet data
@@ -387,7 +385,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Checks database for diet table data from the current day
     public boolean checkForDietData() {
         SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
-        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + DIET_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
@@ -397,7 +395,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_DATE, LocalDate.now().toString());
         
         long insert = fitnessAppDB.insert(DIET_DATA_TABLE, null, cv);
@@ -408,7 +406,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase fitnessAppDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_FOOD, food.getName());
         cv.put(COLUMN_DATE, LocalDate.now().toString());
         cv.put(COLUMN_CALORIES, food.getCalories());
@@ -424,14 +422,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Diet> dietList = new ArrayList<>();
         SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
         
-        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + " from " + DIET_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser), null);
 
         if(cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(0);
                 ArrayList<Food> foodList = new ArrayList<>();
 
-                Cursor cursorTwo = fitnessAppDB.rawQuery("Select " + COLUMN_FOOD + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {date});
+                Cursor cursorTwo = fitnessAppDB.rawQuery("Select " + COLUMN_FOOD + ", " + COLUMN_CALORIES + ", " + COLUMN_PROTEIN + ", " + COLUMN_CARB + ", " + COLUMN_FAT + " from " + FOOD_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {date});
 
                 if(cursorTwo.moveToFirst()) {
                     do {
@@ -461,7 +459,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Food> foodList = new ArrayList<>();
         SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
 
-        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {Food.dateClicked});
+        Cursor cursor = fitnessAppDB.rawQuery("Select * from " + FOOD_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {Food.dateClicked});
 
         if(cursor.moveToFirst()) {
             do {
@@ -502,48 +500,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return sortedFoodList;
     }
-    // Returns daily average of calories from entries within the last week
-    public double getLastWeekAverageCalories() {
-
-        double totalCalories = 0;
-        double numberOfEntries = 0;
-        boolean flag = true;
-
+    // Returns the amount of calories recorded for the given date
+    public int getCaloriesFromDate(int entryID) {
         SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
-        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + " from " + DIET_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-
-        if(cursor.moveToLast()) {
+        String[] columns = {COLUMN_CALORIES};
+        int totalCalories = 0;
+        Cursor cursor = fitnessAppDB.query(FOOD_DATA_TABLE, columns, COLUMN_WEIGHT_ID + " = " + entryID, null, null, null, null);
+        if(cursor.moveToFirst()) {
             do {
-                String date = cursor.getString(0);
-
-                for(int i = 1; i < 7; i++) {
-                    if(date.equals(LocalDate.now().plus(-i, ChronoUnit.DAYS).toString())) {
-
-                        Cursor cursorTwo = fitnessAppDB.rawQuery("Select " + COLUMN_CALORIES + " from " + FOOD_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {date});
-
-                        if(cursorTwo.moveToFirst()) {
-                            do {
-                                totalCalories += cursorTwo.getInt(1);
-                            } while (cursorTwo.moveToNext());
-                            numberOfEntries++;
-                        }
-                        break;
-                    } else {
-                        flag = false;
-                    }
-                }
-                if(numberOfEntries > 6) {
-                    break;
-                }
-            } while(cursor.moveToPrevious() && flag);
-        } else {
-            cursor.close();
-            return 0;
+                totalCalories += cursor.getInt(0);
+            } while(cursor.moveToNext());
         }
-
-        cursor.close();
-
-        return totalCalories / numberOfEntries;
+        return totalCalories;
     }
 
 
@@ -552,7 +520,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Checks database for exercise table data from the current day
     public boolean checkForExerciseData() {
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
-        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + EXERCISE_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
+        Cursor cursor = weightTrackerDB.rawQuery("Select * from " + EXERCISE_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = ?", new String[] {String.valueOf(LocalDate.now())});
         boolean result = cursor.getCount()>0;
         cursor.close();
         return result;
@@ -563,7 +531,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_EXERCISE_TIME, exercise.getTime());
         cv.put(COLUMN_EXERCISE_TYPE, exercise.getExerciseType());
         cv.put(COLUMN_DATE, exercise.getDate());
@@ -577,12 +545,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase weightTrackerDB = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
         cv.put(COLUMN_EXERCISE_TIME, exercise.getTime());
         cv.put(COLUMN_EXERCISE_TYPE, exercise.getExerciseType());
         cv.put(COLUMN_DATE, exercise.getDate());
 
-        long update = weightTrackerDB.update(EXERCISE_DATA_TABLE, cv, USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
+        long update = weightTrackerDB.update(EXERCISE_DATA_TABLE, cv, COLUMN_USER_ID + " = " + getUserID(User.currentUser) + " and " + COLUMN_DATE + " = " + LocalDate.now().toString(), null);
         return update != -1;
     }
     // Generates a list of exercise data to use in the exercise recyclerview
@@ -592,7 +560,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase weightTrackerDB = this.getReadableDatabase();
 
-        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_EXERCISE_TYPE + ", " + COLUMN_EXERCISE_TIME + " from " + EXERCISE_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
+        Cursor cursor = weightTrackerDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_EXERCISE_TYPE + ", " + COLUMN_EXERCISE_TIME + " from " + EXERCISE_DATA_TABLE + " where " + COLUMN_USER_ID + " = " + getUserID(User.currentUser), null);
 
         if(cursor.moveToFirst()) {
             do {
@@ -610,44 +578,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return exerciseList;
-    }
-    // Returns total exercise time from entries within the last week
-    public int getLastWeekExerciseTime() {
-
-        ArrayList<Exercise> lastWeekExercises = new ArrayList<>();
-        SQLiteDatabase fitnessAppDB = this.getReadableDatabase();
-        Cursor cursor = fitnessAppDB.rawQuery("Select " + COLUMN_DATE + ", " + COLUMN_EXERCISE_TYPE + ", " + COLUMN_EXERCISE_TIME + " from " + EXERCISE_DATA_TABLE + " where " + USER_ID + " = " + getUserID(User.currentUser), null);
-
-        if(cursor.moveToLast()) {
-            do {
-                int count = 0;
-                String date = cursor.getString(0);
-                String exerciseType = cursor.getString(1);
-                int exerciseTime = cursor.getInt(2);
-
-                for(int i = 1; i <= 7; i++) {
-                    if(date.equals(LocalDate.now().plus(-i, ChronoUnit.DAYS).toString())) {
-                        Exercise exercise = new Exercise(date, exerciseType, exerciseTime);
-                        lastWeekExercises.add(exercise);
-                    }
-                }
-                count++;
-                if(count > 6) {
-                    break;
-                }
-            } while(cursor.moveToPrevious());
-        } else {
-            cursor.close();
-            return -100;
-        }
-
-        cursor.close();
-
-        int timeExercisedLastWeek = 0;
-        for(int i = 0; i < lastWeekExercises.size(); i++) {
-            timeExercisedLastWeek += lastWeekExercises.get(i).getTime();
-        }
-        return timeExercisedLastWeek;
     }
 
 

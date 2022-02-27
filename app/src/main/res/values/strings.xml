@@ -8,6 +8,7 @@
     <string name="LoginTitle">Fitness Tracker</string>
     <string name="LoginUsername">Username</string>
     <string name="LoginPassword">Password</string>
+    <string name="LoginConnectionSwitch">Offline</string>
     <string name="LoginButton">Log in</string>
     <string name="ButtonForgotUsername">Forgot Username</string>
     <string name="ButtonForgotPassword">Forgot Password</string>
@@ -21,6 +22,7 @@
     <string name="et_newUser_passwordMatch">Re-enter Password</string>
     <string name="et_newUser_email">Email Address</string>
     <string name="et_newUser_phoneNumber">Phone Number</string>
+    <string name="NewUserConnectionSwitch">Offline User</string>
     <string name="btn_newUser_create">Create</string>
     // User Profile Activity Strings
     <string name="tv_userProfile_title">User Name</string>

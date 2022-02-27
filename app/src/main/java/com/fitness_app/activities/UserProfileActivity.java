@@ -5,6 +5,7 @@ package com.fitness_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -16,11 +17,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
+import com.fitness_app.object_classes.Diet;
+import com.fitness_app.object_classes.Exercise;
 import com.fitness_app.object_classes.User;
-import com.fitness_app.object_classes.UserInfo;
 import com.fitness_app.R;
+import com.fitness_app.object_classes.Weight;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -30,7 +37,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private DatabaseHelper fitnessAppDB;
 
     // Variable declaration for User
-    private UserInfo userInfo;
+    private User user;
 
     // Variable declarations for widgets
     private RadioGroup genderSelect;
@@ -41,7 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private SeekBar heightBar;
     private TextView heightData;
     private RadioGroup fitnessPlanSelect;
-    private RadioButton fitnessPlan;
+    private RadioButton fitnessPlanOptions;
     private TextView fitnessPlanData;
 
     @Override
@@ -74,70 +81,141 @@ public class UserProfileActivity extends AppCompatActivity {
         Button diet = findViewById(R.id.btn_userProfile_diet);
         Button edit = findViewById(R.id.btn_userProfile_edit);
 
-        // If user info is not in database, add to database, else retrieve current user information
-        if(!fitnessAppDB.checkUserInfo(fitnessAppDB.getUserID(User.currentUser))) {
-            userInfo = new UserInfo(null, 0, 0, null, 0, 1.375, LocalDate.now().toString() , 0, 0, 0, 0, -100);
-            fitnessAppDB.addUserInfo(userInfo);
-        } else {
-            userInfo = fitnessAppDB.getCurrentUserInfo();
+
+        // Initialize user information variables
+        String resultSetGender = null;
+        int resultSetAge = 0;
+        int resultSetHeight = 0;
+        String resultSetFitnessPlan = null;
+
+        // Data retrieval for remote user
+        if(User.online) {
+            try {
+                // Check MS SQL Server for user data to display on screen
+                String sqlSelect = "SELECT Gender, Age, Height, FitnessPlan FROM User_Information_Table WHERE Username='" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                // Result set values
+                resultSet.next();
+                resultSetGender = resultSet.getString(1);
+                resultSetAge = resultSet.getInt(2);
+                resultSetHeight = resultSet.getInt(3);
+                resultSetFitnessPlan = resultSet.getString(4);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        }
+        // Data retrieval for local user
+        else {
+            user = fitnessAppDB.getCurrentUserInfo();
+
+            // If data exists, display on screen instead of data entry widgets
+            resultSetGender = user.getGender();
+            resultSetAge = user.getAge();
+            resultSetHeight = user.getHeight();
+            resultSetFitnessPlan = user.getFitnessPlan();
         }
 
-
-        // If data exists, display on screen instead of data entry widgets
-        if(fitnessAppDB.getStringData("GENDER", "USER_DATA_TABLE") != null) {
+        // Display data if it exists, Else display selection widgets
+        if(resultSetGender != null) {
             swapGenderWidgets();
+            genderData.setText(resultSetGender);
         }
-        if(fitnessAppDB.getIntData("AGE", "USER_DATA_TABLE") != 0) {
+        if(resultSetAge != 0) {
             swapAgeWidgets();
+            ageData.setText(Integer.toString(resultSetAge));
         }
-        if(fitnessAppDB.getIntData("HEIGHT", "USER_DATA_TABLE") != 0) {
+        if(resultSetHeight != 0) {
             swapHeightWidgets();
+            int ft = resultSetHeight / 12;
+            int in = resultSetHeight % 12;
+            heightData.setText(ft + " ft " + in + " in.");
         }
-        if(fitnessAppDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE") != null) {
+        if(resultSetFitnessPlan != null) {
             swapFitnessPlanWidgets();
+            fitnessPlanData.setText(resultSetFitnessPlan);
         }
 
-        // Set click listeners for edit button (reverts user profile to initial state)
+
+        // Set click listeners
+
+        // Edit button reverts user profile to initial state
         edit.setOnClickListener(v -> swapAllWidgets());
 
         // Gender radio group click listener that changes widgets when button selected
         genderSelect.setOnCheckedChangeListener((group, checkedId) -> {
             if(checkedId > -1) {
                 genderOptions = findViewById(checkedId);
-                userInfo.setGender(genderOptions.getText().toString());
-                fitnessAppDB.updateUserInfo(userInfo);
+                String selectedGender = genderOptions.getText().toString();
+                if(User.online) {
+                    try {
+                        String sqlSelect = "UPDATE User_Information_Table SET Gender = '" + selectedGender + "' WHERE Username = '" + User.currentUser + "'";
+                        Statement statement = User.connection.createStatement();
+                        statement.execute(sqlSelect);
+                    } catch (Exception exception) {
+                        Log.e("Error", exception.getMessage());
+                    }
+                } else {
+                    user.setGender(selectedGender);
+                    fitnessAppDB.updateUserInfo(user);
+                }
                 updateBMR();
                 swapGenderWidgets();
+                genderData.setText(selectedGender);
             }
         });
+
         // Fitness plan radio group click listener that changes widgets when button selected
         fitnessPlanSelect.setOnCheckedChangeListener((group, checkedId) -> {
             if(checkedId > -1) {
-                fitnessPlan = findViewById(checkedId);
-                userInfo.setFitnessPlan(fitnessPlan.getText().toString());
-                fitnessAppDB.updateUserInfo(userInfo);
+                fitnessPlanOptions = findViewById(checkedId);
+                String selectedFitnessPlan = fitnessPlanOptions.getText().toString();
+                if(User.online) {
+                    try {
+                        String sqlSelect = "UPDATE User_Information_Table SET FitnessPlan = '" + selectedFitnessPlan + "' WHERE Username = '" + User.currentUser + "'";
+                        Statement statement = User.connection.createStatement();
+                        statement.execute(sqlSelect);
+                    } catch (Exception exception) {
+                        Log.e("Error", exception.getMessage());
+                    }
+                } else {
+                    user.setFitnessPlan(selectedFitnessPlan);
+                    fitnessAppDB.updateUserInfo(user);
+                }
                 updateBMR();
                 swapFitnessPlanWidgets();
+                fitnessPlanData.setText(selectedFitnessPlan);
             }
         });
 
         ageBar.setMax(87);
         ageBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             final int min = 12;
+            int value = 0;
             @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int value = min + progress;
+                value = min + progress;
                 ageData.setText(Integer.toString(value));
-                userInfo.setAge(value);
-                fitnessAppDB.updateUserInfo(userInfo);
-                updateBMR();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if(User.online) {
+                    try {
+                        String sqlSelect = "UPDATE User_Information_Table SET Age = " + value + " WHERE Username = '" + User.currentUser + "'";
+                        Statement statement = User.connection.createStatement();
+                        statement.execute(sqlSelect);
+                    } catch (Exception exception) {
+                        Log.e("Error", exception.getMessage());
+                    }
+                } else {
+                    user.setAge(value);
+                    fitnessAppDB.updateUserInfo(user);
+                }
+                updateBMR();
                 swapAgeWidgets();
             }
         });
@@ -145,22 +223,33 @@ public class UserProfileActivity extends AppCompatActivity {
         heightBar.setMax(36);
         heightBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             final int min = 48;
+            int value = 0;
             @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int value = min + progress;
+                value = min + progress;
                 int ft = value / 12;
                 int in = value % 12;
                 heightData.setText(ft + " ft " + in + " in.");
-                userInfo.setHeight(value);
-                fitnessAppDB.updateUserInfo(userInfo);
-                updateBMR();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if(User.online) {
+                    try {
+                        String sqlSelect = "UPDATE User_Information_Table SET Height = " + value + " WHERE Username = '" + User.currentUser + "'";
+                        Statement statement = User.connection.createStatement();
+                        statement.execute(sqlSelect);
+                    } catch (Exception exception) {
+                        Log.e("Error", exception.getMessage());
+                    }
+                } else {
+                    user.setHeight(value);
+                    fitnessAppDB.updateUserInfo(user);
+                }
+                updateBMR();
                 swapHeightWidgets();
             }
         });
@@ -174,41 +263,24 @@ public class UserProfileActivity extends AppCompatActivity {
         diet.setOnClickListener(v -> openDietActivity());
     }
 
-    // Change current activity layout methods
-
-    // Swap gender widgets
-    @SuppressLint("SetTextI18n")
+    // Methods for changing current activity layout
     public void swapGenderWidgets() {
         genderSelect.setVisibility(View.INVISIBLE);
         genderData.setVisibility(View.VISIBLE);
-        genderData.setText(fitnessAppDB.getStringData("GENDER", "USER_DATA_TABLE"));
     }
-    // Swap age widgets
-    @SuppressLint("SetTextI18n")
     public void swapAgeWidgets() {
         ageBar.setVisibility(View.INVISIBLE);
         ageData.setVisibility(View.VISIBLE);
-        ageData.setText(Integer.toString(fitnessAppDB.getIntData("AGE", "USER_DATA_TABLE")));
     }
-    // Swap height widgets
-    @SuppressLint("SetTextI18n")
     public void swapHeightWidgets() {
         heightBar.setVisibility(View.INVISIBLE);
         heightData.setVisibility(View.VISIBLE);
-        int dbHeight = fitnessAppDB.getIntData("HEIGHT", "USER_DATA_TABLE");
-        int ft = dbHeight / 12;
-        int in = dbHeight % 12;
-        heightData.setText(ft + " ft " + in + " in.");
     }
-    // Swap fitness plan widgets
-    @SuppressLint("SetTextI18n")
     public void swapFitnessPlanWidgets() {
         fitnessPlanSelect.setVisibility(View.INVISIBLE);
         fitnessPlanData.setVisibility(View.VISIBLE);
-        fitnessPlanData.setText(fitnessAppDB.getStringData("FITNESS_PLAN", "USER_DATA_TABLE"));
     }
     // Swaps all widgets when edit button clicked
-    @SuppressLint("SetTextI18n")
     public void swapAllWidgets() {
         genderSelect.clearCheck();
         genderSelect.setVisibility(View.VISIBLE);
@@ -226,7 +298,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     // Activity change methods
-
     // Navigate to weight page
     public void openWeightActivity() {
         Intent intent = new Intent(this, WeightActivity.class);
@@ -245,51 +316,247 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     // Methods for user recommendations
-
     // Get activity level and weight change trend
     public void setUserRecommendationStats() {
 
-        // Returns if the current date is not at least 7 days from the last evaluation
-        String lastEvaluation = userInfo.getLastEvaluationDate();
+        // Variable declaration and initialization
+        String lastEvaluation = "2022-02-27";
+        String currentPlan = null;
+        double bmrAdjustment = 0;
+        int BMR = 0;
+
+        // Get user data needed for recommendation
+        // Get data for remote user
+        if(User.online) {
+            try {
+                // Check MS SQL Server for user data to display on screen
+                String sqlSelect = "SELECT LastEvaluation, FitnessPlan, BMR, BMRAdjustment FROM User_Information_Table WHERE Username='" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                resultSet.next();
+                lastEvaluation = resultSet.getString(1);
+                currentPlan = resultSet.getString(2);
+                BMR = (int) resultSet.getDouble(3);
+                bmrAdjustment = resultSet.getDouble(4);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        }
+        // Get data for local user
+        else {
+            lastEvaluation = user.getLastEvaluationDate();
+            currentPlan = user.getFitnessPlan();
+            bmrAdjustment = user.getBmrAdjustment();
+            BMR = (int) user.getBMR();
+        }
+
+        // If it hasn't been a week since last evaluation, exit. Else update last evaluation with today's date
         if(LocalDate.parse(lastEvaluation).until(LocalDate.now(), DAYS) < 7) {
             return;
         } else {
-            userInfo.setLastEvaluationDate(LocalDate.now().toString());
+            if(User.online) {
+                try {
+                    String sqlSelect = "UPDATE User_Information_Table SET LastEvaluation = " + LocalDate.now().toString() + " WHERE Username = '" + User.currentUser + "'";
+                    Statement statement = User.connection.createStatement();
+                    statement.execute(sqlSelect);
+                } catch (Exception exception) {
+                    Log.e("Error", exception.getMessage());
+                }
+            } else {
+                user.setLastEvaluationDate(LocalDate.now().toString());
+            }
         }
 
-        int timeExercisedLastWeek = fitnessAppDB.getLastWeekExerciseTime();
-        userInfo.setLastWeekExerciseTime(timeExercisedLastWeek);
+        ArrayList<Exercise> lastWeekExercises = new ArrayList<>();
+
+        if(User.online) {
+            try {
+                String sqlSelect = "SELECT * FROM Exercise_Table WHERE UserID = " + fitnessAppDB.getUserID(User.currentUser) + " ORDER BY EntryID DESC";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                int i = 0;
+                while(resultSet.next() && i < 7) {
+                    Exercise exercise = new Exercise(resultSet.getString(2), resultSet.getString(4), resultSet.getInt(1));
+                    lastWeekExercises.add(exercise);
+                    i++;
+                }
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            lastWeekExercises = fitnessAppDB.getLastWeekExercises();
+        }
+
+        int timeExercisedLastWeek = 0;
+        for(int i = 0; i < lastWeekExercises.size(); i++) {
+            if(LocalDate.parse(lastWeekExercises.get(i).getDate()).until(LocalDate.now(), DAYS) <= 7) {
+                timeExercisedLastWeek += lastWeekExercises.get(i).getTime();
+            } else {
+                break;
+            }
+        }
+
+        if(User.online) {
+            try {
+                String sqlSelect = "UPDATE User_Information_Table SET LastWeekExerciseTime = " + timeExercisedLastWeek + " WHERE Username = '" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                statement.execute(sqlSelect);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            user.setLastWeekExerciseTime(timeExercisedLastWeek);
+            fitnessAppDB.updateUserInfo(user);
+        }
 
         if(timeExercisedLastWeek == 0) {
-            userInfo.setActivityLevel(1.2);
+            user.setActivityLevel(1.2);
         } else if(timeExercisedLastWeek > 0 && timeExercisedLastWeek < 80) {
-            userInfo.setActivityLevel(1.375);
+            user.setActivityLevel(1.375);
         } else if(timeExercisedLastWeek >= 80 && timeExercisedLastWeek < 200) {
-            userInfo.setActivityLevel(1.55);
+            user.setActivityLevel(1.55);
         } else if(timeExercisedLastWeek >= 200 && timeExercisedLastWeek < 280) {
-            userInfo.setActivityLevel(1.725);
+            user.setActivityLevel(1.725);
         } else if(timeExercisedLastWeek >= 280) {
-            userInfo.setActivityLevel(1.9);
+            user.setActivityLevel(1.9);
         }
 
+
         // weight change trend
+        ArrayList<Weight> lastTwoWeeksWeights = new ArrayList<>();
 
-        double weightChange = fitnessAppDB.getWeeklyWeightAverageDifference();
-        userInfo.setWeightChange(weightChange);
+        if(User.online) {
+            try {
+                String sqlSelect = "SELECT * FROM Weight_Table WHERE UserID = " + fitnessAppDB.getUserID(User.currentUser) + " ORDER BY EntryID DESC";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                int i = 0;
+                while(resultSet.next() && i <= 14) {
+                    Weight weight = new Weight(resultSet.getDouble(2), resultSet.getString(3));
+                    lastTwoWeeksWeights.add(weight);
+                    i++;
+                }
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            lastTwoWeeksWeights = fitnessAppDB.getLastTwoWeeksWeights();
+        }
 
-        String currentPlan = userInfo.getFitnessPlan();
-        double bmrAdjustment = userInfo.getBmrAdjustment();
-        double calorieDifferenceFromGoal = fitnessAppDB.getLastWeekAverageCalories() - userInfo.getBMR();
-        userInfo.setCalorieDifferenceFromGoal(calorieDifferenceFromGoal);
+        double lastWeekAvgWeight = 0;
+        double twoWeeksAgoAvgWeight = 0;
+        int count = 0;
+        for(int i = 0; i < lastTwoWeeksWeights.size(); i++) {
+            if(LocalDate.parse(lastTwoWeeksWeights.get(i).getDate()).until(LocalDate.now(), DAYS) <= 7) {
+                lastWeekAvgWeight += lastTwoWeeksWeights.get(i).getWeight();
+                count++;
+            } else {
+                break;
+            }
+        }
+        if(count == 0) {
+            return;
+        }
+        lastWeekAvgWeight /= count;
+        count = 0;
+        for(int i = 0; i < lastTwoWeeksWeights.size(); i++) {
+            if(LocalDate.parse(lastTwoWeeksWeights.get(i).getDate()).until(LocalDate.now(), DAYS) > 7
+            && LocalDate.parse(lastTwoWeeksWeights.get(i).getDate()).until(LocalDate.now(), DAYS) <= 14) {
+                twoWeeksAgoAvgWeight += lastTwoWeeksWeights.get(i).getWeight();
+                count++;
+            } else if(LocalDate.parse(lastTwoWeeksWeights.get(i).getDate()).until(LocalDate.now(), DAYS) > 14) {
+                break;
+            }
+        }
+        if(count == 0) {
+            return;
+        }
+        twoWeeksAgoAvgWeight /= count;
+
+        double weightChange = lastWeekAvgWeight - twoWeeksAgoAvgWeight;
+
+        if(User.online) {
+            try {
+                String sqlSelect = "UPDATE User_Information_Table SET WeightChange = " + weightChange + " WHERE Username = '" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                statement.execute(sqlSelect);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            user.setWeightChange(weightChange);
+            fitnessAppDB.updateUserInfo(user);
+        }
+
+
+        ArrayList<Diet> lastWeekDiets = new ArrayList<>();
+        int daysRecordedCount = 0;
+        int totalCalories = 0;
+        if(User.online) {
+            try {
+                String sqlSelect = "SELECT * FROM Diet_Table WHERE UserID = " + fitnessAppDB.getUserID(User.currentUser) + " ORDER BY EntryID DESC";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                int i = 0;
+                while(resultSet.next() && i <= 7) {
+                    Diet diet = new Diet(resultSet.getString(2));
+                    diet.setEntryID(resultSet.getInt(0));
+                    lastWeekDiets.add(diet);
+                    i++;
+                }
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            lastWeekDiets = fitnessAppDB.getLastWeekDiets();
+        }
+
+        for(int i = 0; i < lastWeekDiets.size(); i++) {
+            if(LocalDate.parse(lastWeekDiets.get(i).getDate()).until(LocalDate.now(), DAYS) <= 7) {
+                if(User.online) {
+                    try {
+                        String sqlSelect = "SELECT Calories FROM Food_Table WHERE EntryID = " + lastWeekDiets.get(i).getEntryID();
+                        Statement statement = User.connection.createStatement();
+                        ResultSet resultSet = statement.executeQuery(sqlSelect);
+                        while(resultSet.next()) {
+                            totalCalories += resultSet.getInt(1);
+                        }
+                    } catch (Exception exception) {
+                        Log.e("Error", exception.getMessage());
+                    }
+                    daysRecordedCount++;
+                } else {
+                    totalCalories += fitnessAppDB.getCaloriesFromDate(lastWeekDiets.get(i).getEntryID());
+                    daysRecordedCount++;
+                }
+
+            } else {
+                break;
+            }
+        }
+
+        int lastWeekAverageCalories = totalCalories / daysRecordedCount;
+        int calorieDifferenceFromGoal = lastWeekAverageCalories - BMR;
+
+        if(User.online) {
+            try {
+                String sqlSelect = "UPDATE User_Information_Table SET CalorieDifferenceFromLastWeek = " + calorieDifferenceFromGoal + " WHERE Username = '" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                statement.execute(sqlSelect);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            user.setCalorieDifferenceFromGoal(calorieDifferenceFromGoal);
+            fitnessAppDB.updateUserInfo(user);
+        }
+
+
 
         // Adjusts BMR based on weight change trend
 
-        // Returns if user does not have at least one weight entry in each of the past two weeks
-        if(weightChange <= -99) {
-            return;
-        }
         // Returns if user is not staying within their calorie goal
-        if(calorieDifferenceFromGoal > 200 || calorieDifferenceFromGoal < 200) {
+        if(calorieDifferenceFromGoal != 200) {
             return;
         }
 
@@ -344,25 +611,63 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
 
-        userInfo.setBmrAdjustment(bmrAdjustment);
 
-        fitnessAppDB.updateUserInfo(userInfo);
+        if(User.online) {
+            try {
+                String sqlSelect = "UPDATE User_Information_Table SET BMRAdjustment = " + bmrAdjustment + " WHERE Username = '" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                statement.execute(sqlSelect);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            user.setBmrAdjustment(bmrAdjustment);
+            fitnessAppDB.updateUserInfo(user);
+        }
+
     }
-
     // Update BMR
     public void updateBMR() {
 
         // Get user information needed to calculate BMR
         double bmr = 0;
-        String gender = userInfo.getGender();
-        double height = userInfo.getHeight();
-        int age = userInfo.getAge();
-        double weight = userInfo.getCurrentWeight();
-        String userGoal = userInfo.getFitnessPlan();
-        double activityLevel = userInfo.getActivityLevel();
+        String gender = null;
+        double height = 0.0;
+        int age = 0;
+        double weight = 0.0;
+        String fitnessPlan = null;
+        double activityLevel = 0.0;
+        // For Remote User
+        if(User.online) {
+            try {
+                // Check MS SQL Server for user data to display on screen
+                String sqlSelect = "SELECT Gender, Age, Height, FitnessPlan, ActivityLevel, CurrentWeight FROM User_Information_Table WHERE Username='" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                // Result set values
+                gender = resultSet.getString(1);
+                age = resultSet.getInt(2);
+                height = resultSet.getInt(3);
+                fitnessPlan = resultSet.getString(4);
+                activityLevel = resultSet.getDouble(5);
+                weight = resultSet.getDouble(6);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        }
+        // For Local User
+        else {
+            gender = user.getGender();
+            height = user.getHeight();
+            age = user.getAge();
+            weight = user.getCurrentWeight();
+            fitnessPlan = user.getFitnessPlan();
+            activityLevel = user.getActivityLevel();
+        }
+
 
         // Return if any of the required fields are empty
-        if(gender == null || age <= 1 || height <= 1 || weight <= 1 || userGoal == null) {
+        if(gender == null || age <= 1 || height <= 1 || weight <= 1 || fitnessPlan == null) {
             return;
         }
 
@@ -373,14 +678,26 @@ public class UserProfileActivity extends AppCompatActivity {
             bmr = (4.536 * weight) + (15.88 * height) - (5 * age) - 161;
         }
 
-        if (userGoal.equals("Gain Muscle")) {
+        if (fitnessPlan.equals("Gain Muscle")) {
             bmr += 300;
-        } else if(userGoal.equals("Lose Weight")) {
+        } else if(fitnessPlan.equals("Lose Weight")) {
             bmr -= 500;
         }
 
         bmr *= activityLevel;
 
-        userInfo.setBMR(bmr);
+        if(User.online) {
+            try {
+                // Check MS SQL Server for user data to display on screen
+                String sqlSelect = "UPDATE User_Information_Table SET BMR = " + bmr + " WHERE Username = '" + User.currentUser + "'";
+                Statement statement = User.connection.createStatement();
+                statement.execute(sqlSelect);
+            } catch (Exception exception) {
+                Log.e("Error", exception.getMessage());
+            }
+        } else {
+            user.setBMR(bmr);
+            fitnessAppDB.updateUserInfo(user);
+        }
     }
 }

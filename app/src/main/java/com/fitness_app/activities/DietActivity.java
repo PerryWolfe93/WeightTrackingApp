@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fitness_app.BackgroundAnimator;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.object_classes.Food;
-import com.fitness_app.object_classes.UserInfo;
+import com.fitness_app.object_classes.User;
 import com.fitness_app.recycler_adapters.DietRecyclerAdapter;
 import com.fitness_app.R;
 
@@ -27,8 +27,7 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
     private RecyclerView recyclerView;
     private EditText enterFood, enterCalories, enterProtein, enterCarb, enterFat;
     private TextView userRecommendation;
-    private UserInfo userInfo;
-    BackgroundAnimator backgroundAnimator;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +38,8 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
         fitnessAppDB = new DatabaseHelper(DietActivity.this);
 
         // Call class method for background animation
-        backgroundAnimator = new BackgroundAnimator();
-        backgroundAnimator.animateBackground(findViewById(R.id.exercise_layout));
+//        BackgroundAnimator backgroundAnimator = new BackgroundAnimator();
+//        backgroundAnimator.animateBackground(findViewById(R.id.user_profile_layout));
 
         // Initialize widget variables
         recyclerView = findViewById(R.id.rv_diet_list);
@@ -53,7 +52,7 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
         Button back = findViewById(R.id.btn_diet_back);
         userRecommendation = findViewById(R.id.tv_diet_userRecommendation);
 
-        userInfo = fitnessAppDB.getCurrentUserInfo();
+        user = fitnessAppDB.getCurrentUserInfo();
 
         // If today's date is not in the database, create new entry, else get data from database
         if(!fitnessAppDB.checkForDietData()) {
@@ -104,11 +103,11 @@ public class DietActivity extends AppCompatActivity implements DietRecyclerAdapt
     @SuppressLint("SetTextI18n")
     private void getRecommendation() {
 
-        String currentPlan = userInfo.getFitnessPlan();
-        double finalBmr = userInfo.getBMR() + userInfo.getBmrAdjustment();
-        double bmrAdjustment = userInfo.getBmrAdjustment();
-        double calorieDifferenceFromGoal = userInfo.getCalorieDifferenceFromGoal();
-        double weightChange = userInfo.getWeightChange();
+        String currentPlan = user.getFitnessPlan();
+        double finalBmr = user.getBMR() + user.getBmrAdjustment();
+        double bmrAdjustment = user.getBmrAdjustment();
+        double calorieDifferenceFromGoal = user.getCalorieDifferenceFromGoal();
+        double weightChange = user.getWeightChange();
 
 
         if(currentPlan.equals("")) {

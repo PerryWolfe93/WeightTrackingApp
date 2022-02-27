@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Diet {
     private String date;
+    private int entryID;
     private ArrayList<Food> foodList;
 
     public Diet(String date) {
@@ -18,7 +19,7 @@ public class Diet {
     public String getDate() {
         return date;
     }
-
+    public int getEntryID() { return entryID; }
     public ArrayList<Food> getFoodList() {
         return foodList;
     }
@@ -26,4 +27,5 @@ public class Diet {
     public void setFoodList(ArrayList<Food> foodList) {
         this.foodList = foodList;
     }
+    public void setEntryID(int entryID) { this.entryID = entryID; }
 }

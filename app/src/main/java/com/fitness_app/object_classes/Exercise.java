@@ -15,11 +15,9 @@ public class Exercise {
     public String getDate() {
         return date;
     }
-
     public String getExerciseType() {
         return exerciseType;
     }
-
     public int getTime() {
         return time;
     }
