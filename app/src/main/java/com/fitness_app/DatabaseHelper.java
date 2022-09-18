@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 
+import com.fitness_app.activities.JournalEntry;
 import com.fitness_app.object_classes.Diet;
 import com.fitness_app.object_classes.Exercise;
 import com.fitness_app.object_classes.Food;
@@ -39,6 +40,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LAST_WEEK_EXERCISE_TIME = "LAST_WEEK_EXERCISE_TIME";
     public static final String COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK = "CALORIE_DIFFERENCE_FROM_LAST_WEEK";
     public static final String COLUMN_WEIGHT_CHANGE = "WEIGHT_CHANGE";
+
+    // Journal Data Table Constants
+    public static final String JOURNAL_DATA_TABLE = "JOURNAL_DATA_TABLE";
+    public static final String COLUMN_JOURNAL_ENTRY_ID = "JOURNAL_ENTRY_ID";
+    public static final String COLUMN_JOURNAL_ENTRY = "JOURNAL_ENTRY";
 
     // Weight Data Table Constants
     public static final String WEIGHT_DATA_TABLE = "WEIGHT_DATA_TABLE";
@@ -96,6 +102,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_CALORIE_DIFFERENCE_FROM_LAST_WEEK + " INTEGER," +
                 COLUMN_WEIGHT_CHANGE + " REAL)";
         fitnessAppDB.execSQL(userDataTable);
+
+        String journalDataTable = "CREATE TABLE " + JOURNAL_DATA_TABLE + " (" +
+                COLUMN_JOURNAL_ENTRY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                COLUMN_USER_ID + " INTEGER NOT NULL, " +
+                COLUMN_JOURNAL_ENTRY + " TEXT NOT NULL, " +
+                COLUMN_DATE + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + COLUMN_USER_ID + ") " +
+                "REFERENCES " + USER_DATA_TABLE + " (" + COLUMN_USER_ID + "))";
+        fitnessAppDB.execSQL(journalDataTable);
 
         String weightDataTable = "CREATE TABLE " + WEIGHT_DATA_TABLE + " (" +
                 COLUMN_WEIGHT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
@@ -315,6 +330,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return lastWeekDiets;
+    }
+
+
+    // Database methods for journal activity
+
+    // Inserts journal entry into the database
+    public boolean addJournalEntry(JournalEntry journalEntry) {
+
+        SQLiteDatabase fitnessTrackerDB = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_USER_ID, getUserID(User.currentUser));
+        cv.put(COLUMN_JOURNAL_ENTRY, journalEntry.getJournalEntry());
+        cv.put(COLUMN_DATE, journalEntry.getDate());
+
+        long insert = fitnessTrackerDB.insert(JOURNAL_DATA_TABLE, null, cv);
+        return insert != -1;
     }
 
 
