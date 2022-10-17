@@ -15,20 +15,20 @@ import com.fitness_app.R;
 import java.util.ArrayList;
 
 public class DietRecyclerAdapter extends RecyclerView.Adapter<DietRecyclerAdapter.MyViewHolder> {
-    private ArrayList<Diet> dietList;
-    private OnDietListener mOnDietListener;
+    private final ArrayList<Diet> dietList;
+    private final OnDietListener mOnDietListener;
 
     public DietRecyclerAdapter(ArrayList<Diet> dietList, OnDietListener onDietListener) {
         this.dietList = dietList;
         this.mOnDietListener = onDietListener;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView dateText;
-        private TextView caloriesText;
-        private TextView proteinText;
-        private TextView carbText;
-        private TextView fatText;
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final TextView dateText;
+        private final TextView caloriesText;
+        private final TextView proteinText;
+        private final TextView carbText;
+        private final TextView fatText;
 
         OnDietListener onDietListener;
 
@@ -64,7 +64,7 @@ public class DietRecyclerAdapter extends RecyclerView.Adapter<DietRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull DietRecyclerAdapter.MyViewHolder holder, int position) {
 
-        ArrayList<Food> foodArrayList = dietList.get(position).getFoodList();
+        ArrayList<String> foodArrayList = dietList.get(position).getFoodList();
 
         String date = dietList.get(position).getDate();
         int calories = 0;
@@ -73,10 +73,13 @@ public class DietRecyclerAdapter extends RecyclerView.Adapter<DietRecyclerAdapte
         int fat = 0;
 
         for(int i = 0; i < foodArrayList.size(); i++) {
-            calories += foodArrayList.get(i).getCalories();
-            protein += foodArrayList.get(i).getProtein();
-            carb += foodArrayList.get(i).getCarbs();
-            fat += foodArrayList.get(i).getFat();
+
+            Food food = Diet.checkCatalog(foodArrayList.get(0));
+
+            calories += food.getCalories();
+            protein += food.getProtein();
+            carb += food.getCarbs();
+            fat += food.getFat();
         }
 
         holder.dateText.setText(date);

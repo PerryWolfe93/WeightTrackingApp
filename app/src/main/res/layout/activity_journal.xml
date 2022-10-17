@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/journal_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_journal_title"
+        android:text="@string/tv_journal_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_journal_date"
+        android:textSize="30sp"
+        android:background="@null"
+        android:textStyle="bold"
+        android:layout_marginStart="40dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_bias=".1"/>
+
+    <TextView
+        android:id="@+id/tv_journal_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_journal_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_journal_title"
+        app:layout_constraintBottom_toTopOf="@+id/tv_journal_todays_entry"
+        android:textSize="20sp"
+        android:background="@null"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/tv_journal_todays_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_journal_date"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_journal_title"
+        app:layout_constraintBottom_toTopOf="@+id/et_journal_entry"
+        android:textSize="11sp"
+        android:background="@null"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/et_journal_entry"
+        android:hint="@string/et_journal_entry"
+        android:autofillHints=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_journal_todays_entry"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_journal_title"
+        app:layout_constraintBottom_toTopOf="@+id/btn_journal_submit"
+        android:ems="8"
+        android:layout_marginTop="40dp" />
+
+    <Button
+        android:id="@+id/btn_journal_submit"
+        android:text="@string/btn_journal_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        app:layout_constraintTop_toBottomOf="@+id/et_journal_entry"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/dp_journal_date"
+        android:layout_marginTop="20dp"/>
+
+    <DatePicker
+        android:id="@+id/dp_journal_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:startYear="2022"
+        app:layout_constraintTop_toBottomOf="@+id/btn_journal_submit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_journal_list_note"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_journal_list_note"
+        android:text="@string/tv_journal_list_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        app:layout_constraintTop_toBottomOf="@+id/dp_journal_date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_journal_view_journal"
+        android:layout_marginTop="30dp"/>
+
+    <Button
+        android:id="@+id/btn_journal_view_journal"
+        android:text="@string/btn_journal_view_journal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        style="?android:attr/borderlessButtonStyle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_journal_list_note"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

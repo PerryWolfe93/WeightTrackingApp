@@ -1,11 +1,12 @@
-package com.fitness_app.activities;
+package com.fitness_app.object_classes;
 
-public class JournalEntry {
+public class Journal {
 
-    private String date;
+    private final String date;
     private String journalEntry;
+    private String note;
 
-    public JournalEntry(String date, String journalEntry) {
+    public Journal(String date, String journalEntry) {
         this.date = date;
         this.journalEntry = journalEntry;
     }
@@ -17,6 +18,8 @@ public class JournalEntry {
     public String getJournalEntry() {
         return journalEntry;
     }
+
+    public String getNote() { return note; }
 
     public void setJournalEntry(String journalEntry) {
         this.journalEntry = journalEntry;

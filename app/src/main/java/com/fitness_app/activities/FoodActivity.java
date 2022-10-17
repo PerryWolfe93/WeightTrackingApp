@@ -10,13 +10,15 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.fitness_app.DatabaseHelper;
+import com.fitness_app.object_classes.Diet;
 import com.fitness_app.recycler_adapters.FoodRecyclerAdapter;
 import com.fitness_app.object_classes.Food;
 import com.fitness_app.R;
 
+import java.util.ArrayList;
+
 public class FoodActivity extends AppCompatActivity {
 
-    private TextView title;
     private RecyclerView recyclerView;
 
     DatabaseHelper fitnessAppDB;
@@ -27,7 +29,7 @@ public class FoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
 
-        title = findViewById(R.id.tv_food_title);
+        TextView title = findViewById(R.id.tv_food_title);
         recyclerView = findViewById(R.id.rv_food_list);
 
         fitnessAppDB = new DatabaseHelper(this);
@@ -40,7 +42,14 @@ public class FoodActivity extends AppCompatActivity {
 
     // Method for populating the recyclerview with data from the diet data table
     private void setAdapter() {
-        FoodRecyclerAdapter adapter = new FoodRecyclerAdapter(fitnessAppDB.getFoodList());
+        ArrayList<Food> foodArrayList = new ArrayList<>();
+        ArrayList<String> foodList = fitnessAppDB.getFoodList();
+
+        for(String food : foodList) {
+            foodArrayList.add(Diet.checkCatalog(food));
+        }
+
+        FoodRecyclerAdapter adapter = new FoodRecyclerAdapter(foodArrayList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -8,24 +8,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fitness_app.object_classes.Diet;
 import com.fitness_app.object_classes.Food;
 import com.fitness_app.R;
 
 import java.util.ArrayList;
 
 public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapter.MyViewHolder>{
-    private ArrayList<Food> foodList;
+    private final ArrayList<Food> foodList;
 
     public FoodRecyclerAdapter(ArrayList<Food> foodList) {
         this.foodList = foodList;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView foodText;
-        private TextView caloriesText;
-        private TextView proteinText;
-        private TextView carbText;
-        private TextView fatText;
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        private final TextView foodText;
+        private final TextView caloriesText;
+        private final TextView proteinText;
+        private final TextView carbText;
+        private final TextView fatText;
 
         public MyViewHolder(final View view) {
             super(view);
@@ -41,7 +42,7 @@ public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapte
     @Override
     public FoodRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_list, parent, false);
-        return new FoodRecyclerAdapter.MyViewHolder(itemView);
+        return new MyViewHolder(itemView);
     }
 
     @Override
@@ -49,14 +50,14 @@ public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapte
 
         String name = foodList.get(position).getName();
         int calories = foodList.get(position).getCalories();
-        int protein = foodList.get(position).getProtein();;
-        int carb = foodList.get(position).getCarbs();;
-        int fat = foodList.get(position).getFat();;
+        int protein = foodList.get(position).getProtein();
+        int carbs = foodList.get(position).getCarbs();
+        int fat = foodList.get(position).getFat();
 
         holder.foodText.setText(name);
         holder.caloriesText.setText(String.valueOf(calories));
         holder.proteinText.setText(String.valueOf(protein));
-        holder.carbText.setText(String.valueOf(carb));
+        holder.carbText.setText(String.valueOf(carbs));
         holder.fatText.setText(String.valueOf(fat));
     }
 

@@ -222,8 +222,19 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/btn_userProfile_edit"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_userProfile_journal"
         app:layout_constraintBottom_toTopOf="@+id/btn_userProfile_exercise"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/btn_userProfile_journal"
+        android:text="@string/btn_userProfile_journal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btn_userProfile_weight"
+        app:layout_constraintLeft_toRightOf="@+id/btn_userProfile_weight"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_userProfile_weight"
         style="?android:attr/borderlessButtonStyle"/>
 
     <Button

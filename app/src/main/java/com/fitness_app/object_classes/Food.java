@@ -47,4 +47,5 @@ public class Food {
     public void setFat(int fat) {
         this.fat = fat;
     }
+
 }

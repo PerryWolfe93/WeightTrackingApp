@@ -6,6 +6,7 @@ public class User {
     public static String currentUser;
     public static Connection connection;
     public static boolean online;
+    public static int userID;
     private String username;
     private String password;
     private String phoneNumber;
@@ -32,23 +33,6 @@ public class User {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.gender = gender;
-        this.age = age;
-        this.height = height;
-        this.fitnessPlan = fitnessPlan;
-        this.BMR = BMR;
-        this.activityLevel = activityLevel;
-        this.lastEvaluationDate = lastEvaluationDate;
-        this.currentWeight = currentWeight;
-        this.bmrAdjustment = bmrAdjustment;
-        this.lastWeekExerciseTime = lastWeekExerciseTime;
-        this.calorieDifferenceFromGoal = calorieDifferenceFromGoal;
-        this.weightChange = weightChange;
-    }
-    public User(String gender, int age, int height, String fitnessPlan, double BMR,
-                double activityLevel, String lastEvaluationDate, double currentWeight,
-                double bmrAdjustment, int lastWeekExerciseTime, int calorieDifferenceFromGoal,
-                double weightChange) {
         this.gender = gender;
         this.age = age;
         this.height = height;

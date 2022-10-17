@@ -76,6 +76,7 @@ public class UserProfileActivity extends AppCompatActivity {
         heightData = findViewById(R.id.tv_userProfile_heightData);
         fitnessPlanSelect = findViewById(R.id.rg_userProfile_fitnessPlan);
         fitnessPlanData = findViewById(R.id.tv_userProfile_fitnessPlanData);
+        Button journal = findViewById(R.id.btn_userProfile_journal);
         Button weight = findViewById(R.id.btn_userProfile_weight);
         Button exercise = findViewById(R.id.btn_userProfile_exercise);
         Button diet = findViewById(R.id.btn_userProfile_diet);
@@ -258,6 +259,7 @@ public class UserProfileActivity extends AppCompatActivity {
         setUserRecommendationStats();
 
         // Buttons to change activities
+        journal.setOnClickListener(v -> openJournalActivity());
         weight.setOnClickListener(v -> openWeightActivity());
         exercise.setOnClickListener(v -> openExerciseActivity());
         diet.setOnClickListener(v -> openDietActivity());
@@ -301,6 +303,11 @@ public class UserProfileActivity extends AppCompatActivity {
     // Navigate to weight page
     public void openWeightActivity() {
         Intent intent = new Intent(this, WeightActivity.class);
+        startActivity(intent);
+    }
+    // Navigate to journal page
+    public void openJournalActivity() {
+        Intent intent = new Intent(this, JournalActivity.class);
         startActivity(intent);
     }
     // Navigate to exercise page

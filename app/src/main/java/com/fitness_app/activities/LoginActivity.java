@@ -15,36 +15,37 @@ import com.fitness_app.ConSQL;
 import com.fitness_app.DatabaseHelper;
 import com.fitness_app.object_classes.User;
 import com.fitness_app.R;
+import com.google.gson.Gson;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import RestAPI.APIClient;
+import RestAPI.APIService;
+import RestAPI.TokenResponse;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Variable declarations
-    private EditText username, password;
-    private Button login, forgotUsername, forgotPassword, newUser;
+    EditText username, password;
+    SwitchCompat connectionSwitch;
     DatabaseHelper fitnessAppDB;
-    BackgroundAnimator backgroundAnimator;
-    private SwitchCompat connectionSwitch;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         // Call class method for background animation
-        backgroundAnimator = new BackgroundAnimator();
+        BackgroundAnimator backgroundAnimator = new BackgroundAnimator();
         backgroundAnimator.animateBackground(findViewById(R.id.login_layout));
 
         // Assign values to widget variables
         username = findViewById(R.id.et_login_username);
         password = findViewById(R.id.et_login_password);
-        login = findViewById(R.id.btn_login);
-        forgotUsername = findViewById(R.id.btn_forgotUsername);
-        forgotPassword = findViewById(R.id.btn_forgotPassword);
-        newUser = findViewById(R.id.btn_newUser);
+        Button login = findViewById(R.id.btn_login);
+        Button forgotUsername = findViewById(R.id.btn_forgotUsername);
+        Button forgotPassword = findViewById(R.id.btn_forgotPassword);
+        Button newUser = findViewById(R.id.btn_newUser);
         connectionSwitch = findViewById(R.id.swt_login_connection);
         fitnessAppDB = new DatabaseHelper(this);
 
@@ -60,20 +61,9 @@ public class LoginActivity extends AppCompatActivity {
 
             // Login for remote user
             if(connectionSwitch.isChecked()) {
-                User.connection = ConSQL.connectionClass(usernameEntry, passwordEntry);
-                try {
-                    if(User.connection != null) {
-                        User.currentUser = usernameEntry;
-                        User.online = true;
-                        openUserProfileActivity();
-                    }
-                    else {
-                        Toast.makeText(this, "Incorrect Username/Password Combination", Toast.LENGTH_LONG).show();
-                    }
-                }
-                catch (Exception exception) {
-                    Log.e("Error", exception.getMessage());
-                }
+
+
+
             }
 
             // Login for local user
@@ -84,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Password Incorrect", Toast.LENGTH_LONG).show();
                 } else {
                     User.currentUser = usernameEntry;
+                    User.userID = fitnessAppDB.getUserID(usernameEntry);
                     User.online = false;
                     openUserProfileActivity();
                 }
@@ -92,18 +83,10 @@ public class LoginActivity extends AppCompatActivity {
 
         connectionSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
-                connectionSwitch.setText("Online");
+                connectionSwitch.setText(R.string.swt_login_online);
             } else {
-                connectionSwitch.setText("Offline");
+                connectionSwitch.setText(R.string.swt_login_offline);
             }
-        });
-
-        forgotUsername.setOnClickListener(v -> {
-
-        });
-
-        forgotPassword.setOnClickListener(v -> {
-
         });
 
         newUser.setOnClickListener(v -> openNewUserActivity());
@@ -118,5 +101,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UserProfileActivity.class);
         startActivity(intent);
     }
+
 }
 

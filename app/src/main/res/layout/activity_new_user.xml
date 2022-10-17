@@ -34,7 +34,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/et_newUser_password"
         android:layout_marginTop="40dp"
-        android:ems="10"/>
+        android:ems="10"
+        android:inputType="text"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/et_newUser_password"
@@ -45,7 +47,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/et_newUser_passwordMatch"
-        android:ems="10"/>
+        android:ems="10"
+        android:autofillHints="password"
+        android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/et_newUser_passwordMatch"
@@ -56,7 +60,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/et_newUser_email"
-        android:ems="10"/>
+        android:ems="10"
+        android:autofillHints="password"
+        android:inputType="textPassword"/>
 
     <EditText
         android:id="@+id/et_newUser_email"
@@ -67,7 +73,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/et_newUser_phoneNumber"
-        android:ems="10"/>
+        android:ems="10"
+        android:autofillHints="emailAddress"
+        android:inputType="textEmailAddress"/>
 
     <EditText
         android:id="@+id/et_newUser_phoneNumber"
@@ -78,11 +86,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/swt_newUser_connection"
-        android:ems="10"/>
+        android:ems="10"
+        android:autofillHints="phone"
+        android:inputType="phone"/>
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/swt_newUser_connection"
-        android:text="@string/NewUserConnectionSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/et_newUser_phoneNumber"

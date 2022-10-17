@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/et_diet_food"
+        app:layout_constraintBottom_toTopOf="@+id/btn_diet_add"
         android:textSize="40sp"
         android:background="@null"
         android:textStyle="bold"
@@ -25,74 +25,24 @@
         app:layout_constraintVertical_bias=".1" />
 
     <EditText
-        android:id="@+id/et_diet_food"
-        android:hint="@string/et_diet_food"
+        android:id="@+id/et_diet_foodName"
+        android:hint="@string/et_diet_foodName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tv_diet_title"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/et_diet_calories"
-        app:layout_constraintBottom_toTopOf="@+id/et_diet_protein"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        android:ems="8" />
-
-    <EditText
-        android:id="@+id/et_diet_calories"
-        android:hint="@string/et_diet_calories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/et_diet_food"
-        app:layout_constraintLeft_toRightOf="@+id/et_diet_food"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/et_diet_food"
-        android:layout_marginStart="30dp"
-        android:ems="8" />
-
-    <EditText
-        android:id="@+id/et_diet_protein"
-        android:hint="@string/et_diet_protein"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/et_diet_food"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/et_diet_carb"
-        app:layout_constraintBottom_toTopOf="@+id/btn_diet_add"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        android:ems="5" />
-
-    <EditText
-        android:id="@+id/et_diet_carb"
-        android:hint="@string/et_diet_carb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/et_diet_protein"
-        app:layout_constraintLeft_toRightOf="@+id/et_diet_protein"
-        app:layout_constraintRight_toLeftOf="@+id/et_diet_fat"
-        app:layout_constraintBottom_toBottomOf="@+id/et_diet_protein"
-        android:layout_marginStart="15dp"
-        android:ems="5" />
-
-    <EditText
-        android:id="@+id/et_diet_fat"
-        android:hint="@string/et_diet_fat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/et_diet_protein"
-        app:layout_constraintLeft_toRightOf="@+id/et_diet_carb"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/et_diet_protein"
-        android:layout_marginStart="15dp"
-        android:ems="5" />
+        app:layout_constraintBottom_toTopOf="@+id/btn_diet_add"/>
 
     <Button
         android:id="@+id/btn_diet_add"
         android:text="@string/btn_diet_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/et_diet_protein"
+        app:layout_constraintTop_toBottomOf="@+id/tv_diet_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_diet_remove"
-        app:layout_constraintBottom_toTopOf="@+id/ll_diet_list"
+        app:layout_constraintBottom_toTopOf="@+id/ll_diet_foods"
         android:textSize="16sp"
         style="?android:attr/borderlessButtonStyle"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -111,10 +61,40 @@
         style="?android:attr/borderlessButtonStyle"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ll_diet_list"
+        android:id="@+id/ll_diet_foods"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/btn_diet_add"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_diet_catalog">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_diet_foods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btn_diet_catalog"
+        android:text="@string/btn_diet_catalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ll_diet_foods"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_diet_list"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ll_diet_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/btn_diet_catalog"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tv_diet_userRecommendation"
